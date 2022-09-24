@@ -4,12 +4,9 @@
 
 int scanOne();
 
-//startArray = 0
-//endArray = 10 /size/
-
 void insertSort(int* arrayOut, int startArray, int endArray) {
 	if (arrayOut != NULL) {
-		for (int i = startArray + 1; i < endArray; ++i) {
+		for (int i = startArray + 1; i <= endArray; ++i) {
 			int j = i;
 			while (j >= startArray + 1 && arrayOut[j] < arrayOut[j - 1]) {
 				int copyElement = arrayOut[j];
@@ -22,15 +19,35 @@ void insertSort(int* arrayOut, int startArray, int endArray) {
 }
 
 int partition(int* arrayOut, int startArray, int endArray) {
-	int pivot = arrayOut[endArray - 1];
+	int pivot = arrayOut[endArray];
+	int i = startArray;
 
-	return 0;
+	if (arrayOut != NULL) {
+		for (int j = startArray; j < endArray; ++j) {
+			if (arrayOut[j] <= pivot) {
+				int copyElement = arrayOut[j];
+				arrayOut[j] = arrayOut[i];
+				arrayOut[i] = copyElement;
+				++i;
+			}
+		}
+
+		int copyElement = arrayOut[i];
+		arrayOut[i] = arrayOut[endArray];
+		arrayOut[endArray] = copyElement;
+	}
+	return i;
 }
 
 void qSort(int* arrayOut, int startArray, int endArray) {
 	if (endArray - startArray + 1 <= 10) {
 		insertSort(arrayOut, startArray, endArray);
 		return;
+	}
+	if (startArray < endArray) {
+		int positionElement = partition(arrayOut, startArray, endArray);
+		qSort(arrayOut, startArray, positionElement - 1);
+		qSort(arrayOut, positionElement + 1, endArray);
 	}
 }
 
@@ -45,7 +62,12 @@ int main() {
 			arrayOut[i] = scanOne();
 		}
 	}
-
+	qSort(arrayOut, 0, size - 1);
+	if (arrayOut != NULL) {
+		for (int i = 0; i < size; ++i) {
+			printf("%d ", arrayOut[i]);
+		}
+	}
 	free(arrayOut);
 }
 
