@@ -4,9 +4,11 @@
 
 int scanOne();
 
-void 
+void insertSort(int* arrayOut, int size) {
 
-void Qsort(int* arrayOut, int size) {
+}
+
+void qSort(int* arrayOut, int size) {
 	if (size <= 10) {
 
 		return;
