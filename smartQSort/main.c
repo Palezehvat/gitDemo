@@ -4,11 +4,14 @@
 
 int scanOne();
 
-void insertSort(int* arrayOut, int size) {
+//startArray = 0
+//endArray = 10 /size/
+
+void insertSort(int* arrayOut, int startArray, int endArray) {
 	if (arrayOut != NULL) {
-		for (int i = 1; i < size; ++i) {
+		for (int i = startArray + 1; i < endArray; ++i) {
 			int j = i;
-			while (j >= 1 && arrayOut[j] < arrayOut[j - 1]) {
+			while (j >= startArray + 1 && arrayOut[j] < arrayOut[j - 1]) {
 				int copyElement = arrayOut[j];
 				arrayOut[j] = arrayOut[j - 1];
 				arrayOut[j - 1] = copyElement;
@@ -18,9 +21,15 @@ void insertSort(int* arrayOut, int size) {
 	}
 }
 
-void qSort(int* arrayOut, int size) {
-	if (size <= 10) {
+int partition(int* arrayOut, int startArray, int endArray) {
+	int pivot = arrayOut[endArray - 1];
 
+	return 0;
+}
+
+void qSort(int* arrayOut, int startArray, int endArray) {
+	if (endArray - startArray + 1 <= 10) {
+		insertSort(arrayOut, startArray, endArray);
 		return;
 	}
 }
