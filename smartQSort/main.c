@@ -5,7 +5,17 @@
 int scanOne();
 
 void insertSort(int* arrayOut, int size) {
-
+	if (arrayOut != NULL) {
+		for (int i = 1; i < size; ++i) {
+			int j = i;
+			while (j >= 1 && arrayOut[j] < arrayOut[j - 1]) {
+				int copyElement = arrayOut[j];
+				arrayOut[j] = arrayOut[j - 1];
+				arrayOut[j - 1] = copyElement;
+				--j;
+			}
+		}
+	}
 }
 
 void qSort(int* arrayOut, int size) {
@@ -26,6 +36,8 @@ int main() {
 			arrayOut[i] = scanOne();
 		}
 	}
+
+	free(arrayOut);
 }
 
 int scanOne() {
