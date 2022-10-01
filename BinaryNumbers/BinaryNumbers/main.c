@@ -22,30 +22,48 @@ void translateDecToBin(bool *binaryNumber, int size, int number) {
 	}
 }
 
-void printArrayBinary(bool *binaryNumber, int size) {
-	for (int i = 13 - size; i < 13; ++i) {
+void printArrayBinary(bool *binaryNumber, int size, int maxPow2) {
+	for (int i = maxPow2 - size; i < maxPow2; ++i) {
 		printf("%d", binaryNumber[i]);
 	}
 	printf("\n");
 }
-/*
-void sumToBinary(int *binaryNumber1, int *binaryNumber2, int size1, int size2) {
-	int size3 = size1 + size2;
-	bool *binaryNumber3 = (bool*)calloc(size3, sizeof(int));
 
-	int pastSum = -1;
-	int i = max(size1, size2) - 1;
-	while (i != 0) {
-		if (i > size1) {
-			
-		} else if (i > size2) {
+void sumToBinary(bool *binaryNumber1, bool *binaryNumber2, int size1, int size2) {
+	bool binaryNumber3[14] = {false};
 
+	bool pastSum = false;
+	int i = 12;
+	int size3 = 0;
+
+	while (i >= 0) {
+		if (binaryNumber1[i] && binaryNumber2[i] && !pastSum) {
+			binaryNumber3[i + 1] = false;
+		} else if (!binaryNumber1[i] && binaryNumber2[i] && pastSum) {
+			binaryNumber3[i + 1] = false;
+		} else if (binaryNumber1[i] && !binaryNumber2[i] && pastSum) {
+			binaryNumber3[i + 1] = false;
 		} else {
-
+			binaryNumber3[i + 1] = binaryNumber1[i] + binaryNumber2[i] + pastSum;
 		}
+		if (binaryNumber3[i + 1]) {
+			size3 = 14 - i - 1;
+		}
+		pastSum = false;
+		if (binaryNumber1[i] && binaryNumber2[i]) {
+			pastSum = true;
+		}
+		--i;
 	}
+
+	if (binaryNumber1[0] && binaryNumber2[0]) {
+		binaryNumber3[0] = true;
+		size3 = 14;
+	}
+
+	printArrayBinary(binaryNumber3, size3, 14);
 }
-*/
+
 void toBinary(int number1, int number2) {
 	number1 = number1 < 0 ? 4096 - number1 : number1;
 	number2 = number2 < 0 ? 4096 - number2 : number2;
@@ -57,8 +75,19 @@ void toBinary(int number1, int number2) {
 	translateDecToBin(binaryNumber1, size1, number1);
 	translateDecToBin(binaryNumber2, size2, number2);
 
-	printArrayBinary(binaryNumber1, size1);
-	printArrayBinary(binaryNumber2, size2);
+	printArrayBinary(binaryNumber1, size1, 13);
+	printArrayBinary(binaryNumber2, size2, 13);
+
+	for (int i = 0; i < 13; ++i) {
+		printf("%d", binaryNumber1[i]);
+	}
+	printf("\n");
+	for (int i = 0; i < 13; ++i) {
+		printf("%d", binaryNumber2[i]);
+	}
+	printf("\n");
+
+	sumToBinary(binaryNumber1, binaryNumber2, size1, size2);
 }
 
 int main() {
@@ -74,6 +103,7 @@ int main() {
 		printf("%s\n", "¬веденное число превышает ограничение! ¬ведите заново");
 		number2 = scanOne();
 	}
+
 	toBinary(number1, number2);
 }
 
