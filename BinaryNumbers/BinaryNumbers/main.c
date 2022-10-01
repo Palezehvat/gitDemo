@@ -6,6 +6,19 @@
 int scanOne();
 void print(int number);
 
+void binaryToDecimal(bool *binaryNumber)
+{
+	int multiplier = 1;
+	int number = 0;
+	for (int i = 13; i > 0; --i) {
+		number += multiplier * binaryNumber[i];
+		multiplier = multiplier << 1;
+	}
+	if (binaryNumber[0] == 1) {
+		number = -number;
+	}
+	printf("%d", number);
+}
 int sizeBinary(int number) {
 	int size = 0;
 	while (number) {
@@ -15,7 +28,7 @@ int sizeBinary(int number) {
 	return size;
 }
 
-void translateDecToBin(bool *binaryNumber, int size, int number) {
+void translateDecimalToBinary(bool *binaryNumber, int size, int number) {
 	for (int i = 12; i >= 13 - size; --i) {
 		binaryNumber[i] = (number & 1);
 		number = number >> 1;
@@ -37,6 +50,7 @@ void sumToBinary(bool *binaryNumber1, bool *binaryNumber2, int size1, int size2)
 	int size3 = 0;
 
 	while (i >= 0) {
+		//if ((!binaryNumber1[0] && !binaryNumber2[0]) || (binaryNumber1[0] && binaryNumber2[0])){
 		if (binaryNumber1[i] && binaryNumber2[i] && !pastSum) {
 			binaryNumber3[i + 1] = false;
 		} else if (!binaryNumber1[i] && binaryNumber2[i] && pastSum) {
@@ -62,6 +76,7 @@ void sumToBinary(bool *binaryNumber1, bool *binaryNumber2, int size1, int size2)
 	}
 
 	printArrayBinary(binaryNumber3, size3, 14);
+	binaryToDecimal(binaryNumber3);
 }
 
 void toBinary(int number1, int number2) {
@@ -72,20 +87,11 @@ void toBinary(int number1, int number2) {
 	bool binaryNumber1[13] = {false};
 	bool binaryNumber2[13] = {false};
 	
-	translateDecToBin(binaryNumber1, size1, number1);
-	translateDecToBin(binaryNumber2, size2, number2);
+	translateDecimalToBinary(binaryNumber1, size1, number1);
+	translateDecimalToBinary(binaryNumber2, size2, number2);
 
 	printArrayBinary(binaryNumber1, size1, 13);
 	printArrayBinary(binaryNumber2, size2, 13);
-
-	for (int i = 0; i < 13; ++i) {
-		printf("%d", binaryNumber1[i]);
-	}
-	printf("\n");
-	for (int i = 0; i < 13; ++i) {
-		printf("%d", binaryNumber2[i]);
-	}
-	printf("\n");
 
 	sumToBinary(binaryNumber1, binaryNumber2, size1, size2);
 }
