@@ -30,6 +30,8 @@ void printArrayBinary(bool *binaryNumber, int size) {
 }
 
 void toBinary(int number1, int number2) {
+	number1 = number1 < 0 ? 4096 - number1 : number1;
+	number2 = number2 < 0 ? 4096 - number2 : number2;
 	int size1 = sizeBinary(number1);
 	int size2 = sizeBinary(number2);
 	bool *binaryNumber1 = (bool*)calloc(size1, sizeof(bool));
@@ -47,9 +49,17 @@ void toBinary(int number1, int number2) {
 
 int main() {
 	setlocale(LC_ALL, "RUS");
-	printf("%s", "¬ведите два числа, которые затем будут преобразованы в двоичное представление\n");
+	printf("%s", "¬ведите два числа, которые затем будут преобразованы в двоичное представление.„исла должны быть меньше 4096 по модулю\n");
 	int number1 = scanOne();
+	while (abs(number1) >= 4096) {
+		printf("%s\n", "¬веденное число превышает ограничение! ¬ведите заново");
+		number1 = scanOne();
+	}
 	int number2 = scanOne();
+	while (abs(number2) >= 4096) {
+		printf("%s\n", "¬веденное число превышает ограничение! ¬ведите заново");
+		number2 = scanOne();
+	}
 	toBinary(number1, number2);
 }
 
