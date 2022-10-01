@@ -10,12 +10,12 @@ void binaryToDecimal(bool *binaryNumber)
 {
 	int multiplier = 1;
 	int number = 0;
-	for (int i = 13; i > 0; --i) {
+	for (int i = 11; i >= 0; --i) {
 		number += multiplier * binaryNumber[i];
 		multiplier = multiplier << 1;
 	}
-
-	if (number >= 4096) {
+	
+	if (binaryNumber[0]) {
 		number = number - 4096;
 	}
 	printf("%d", number);
@@ -30,7 +30,7 @@ int sizeBinary(int number) {
 }
 
 void translateDecimalToBinary(bool *binaryNumber, int size, int number) {
-	for (int i = 12; i >= 13 - size; --i) {
+	for (int i = 11; i >= 12 - size; --i) {
 		binaryNumber[i] = (number & 1);
 		number = number >> 1;
 	}
@@ -44,35 +44,35 @@ void printArrayBinary(bool *binaryNumber, int size, int maxPow2) {
 }
 
 void sumToBinary(bool *binaryNumber1, bool *binaryNumber2, int size1, int size2) {
-	bool binaryNumber3[14] = {false};
+	bool binaryNumber3[12] = {false};
 
 	bool pastSum = false;
-	int i = 12;
+	int i = 11;
 	int size3 = 0;
 
 	while (i >= 0) {
 		if (binaryNumber1[i] && binaryNumber2[i] && !pastSum || !binaryNumber1[i] && binaryNumber2[i] && pastSum || binaryNumber1[i] && !binaryNumber2[i] && pastSum) {
-			binaryNumber3[i + 1] = false;
+			binaryNumber3[i] = false;
 			pastSum = true;
 		} else if (binaryNumber1[i] && binaryNumber2[i] && pastSum) {
-			binaryNumber3[i + 1] = binaryNumber1[i] + binaryNumber2[i] + pastSum;
+			binaryNumber3[i] = binaryNumber1[i] + binaryNumber2[i] + pastSum;
 			pastSum = true;
 		} else {
-			binaryNumber3[i + 1] = binaryNumber1[i] + binaryNumber2[i] + pastSum;
+			binaryNumber3[i] = binaryNumber1[i] + binaryNumber2[i] + pastSum;
 			pastSum = false;
 		}
-		if (binaryNumber3[i + 1]) {
-			size3 = 14 - i - 1;
+		if (binaryNumber3[i]) {
+			size3 = 12 - i;
 		}
 		--i;
 	}
 
 	if (binaryNumber1[0] && binaryNumber2[0]) {
 		binaryNumber3[0] = true;
-		size3 = 14;
+		size3 = 12;
 	}
 
-	printArrayBinary(binaryNumber3, size3, 14);
+	printArrayBinary(binaryNumber3, size3, 12);
 	binaryToDecimal(binaryNumber3);
 }
 
@@ -81,14 +81,14 @@ void toBinary(int number1, int number2) {
 	number2 = number2 < 0 ? 4096 + number2 : number2;
 	int size1 = sizeBinary(number1);
 	int size2 = sizeBinary(number2);
-	bool binaryNumber1[13] = {false};
-	bool binaryNumber2[13] = {false};
-	
+	bool binaryNumber1[12] = {false};
+	bool binaryNumber2[12] = {false};
+
 	translateDecimalToBinary(binaryNumber1, size1, number1);
 	translateDecimalToBinary(binaryNumber2, size2, number2);
 
-	printArrayBinary(binaryNumber1, size1, 13);
-	printArrayBinary(binaryNumber2, size2, 13);
+	printArrayBinary(binaryNumber1, size1, 12);
+	printArrayBinary(binaryNumber2, size2, 12);
 
 	sumToBinary(binaryNumber1, binaryNumber2, size1, size2);
 }
