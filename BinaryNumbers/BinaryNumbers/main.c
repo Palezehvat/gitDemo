@@ -14,8 +14,9 @@ void binaryToDecimal(bool *binaryNumber)
 		number += multiplier * binaryNumber[i];
 		multiplier = multiplier << 1;
 	}
-	if (binaryNumber[0] == 1) {
-		number = -number;
+
+	if (number >= 4096) {
+		number = number - 4096;
 	}
 	printf("%d", number);
 }
@@ -50,22 +51,18 @@ void sumToBinary(bool *binaryNumber1, bool *binaryNumber2, int size1, int size2)
 	int size3 = 0;
 
 	while (i >= 0) {
-		//if ((!binaryNumber1[0] && !binaryNumber2[0]) || (binaryNumber1[0] && binaryNumber2[0])){
-		if (binaryNumber1[i] && binaryNumber2[i] && !pastSum) {
+		if (binaryNumber1[i] && binaryNumber2[i] && !pastSum || !binaryNumber1[i] && binaryNumber2[i] && pastSum || binaryNumber1[i] && !binaryNumber2[i] && pastSum) {
 			binaryNumber3[i + 1] = false;
-		} else if (!binaryNumber1[i] && binaryNumber2[i] && pastSum) {
-			binaryNumber3[i + 1] = false;
-		} else if (binaryNumber1[i] && !binaryNumber2[i] && pastSum) {
-			binaryNumber3[i + 1] = false;
+			pastSum = true;
+		} else if (binaryNumber1[i] && binaryNumber2[i] && pastSum) {
+			binaryNumber3[i + 1] = binaryNumber1[i] + binaryNumber2[i] + pastSum;
+			pastSum = true;
 		} else {
 			binaryNumber3[i + 1] = binaryNumber1[i] + binaryNumber2[i] + pastSum;
+			pastSum = false;
 		}
 		if (binaryNumber3[i + 1]) {
 			size3 = 14 - i - 1;
-		}
-		pastSum = false;
-		if (binaryNumber1[i] && binaryNumber2[i]) {
-			pastSum = true;
 		}
 		--i;
 	}
@@ -80,8 +77,8 @@ void sumToBinary(bool *binaryNumber1, bool *binaryNumber2, int size1, int size2)
 }
 
 void toBinary(int number1, int number2) {
-	number1 = number1 < 0 ? 4096 - number1 : number1;
-	number2 = number2 < 0 ? 4096 - number2 : number2;
+	number1 = number1 < 0 ? 4096 + number1 : number1;
+	number2 = number2 < 0 ? 4096 + number2 : number2;
 	int size1 = sizeBinary(number1);
 	int size2 = sizeBinary(number2);
 	bool binaryNumber1[13] = {false};
