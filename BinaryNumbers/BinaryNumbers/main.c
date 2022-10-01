@@ -72,8 +72,50 @@ int toChangeNegativeNumbers(int number) {
 	return number < 0 ? 4096 + number : number;
 }
 
+bool testStandart(void) {
+	int size1 = sizeBinary(12);
+	int size2 = sizeBinary(13);
+	bool* binaryNumber1 = (bool*)calloc(12, sizeof(int));
+	bool* binaryNumber2 = (bool*)calloc(12, sizeof(int));
+	translateDecimalToBinary(binaryNumber1, size1, 12);
+	translateDecimalToBinary(binaryNumber2, size2, 13);
+	bool* binaryNumber3 = (bool*)calloc(12, sizeof(int));
+	sumToBinary(binaryNumber1, binaryNumber2, binaryNumber3, size1, size2);
+	free(binaryNumber1);
+	free(binaryNumber2);
+	int result = binaryToDecimal(binaryNumber3);
+	free(binaryNumber3);
+	return result == 25;
+}
+
+bool testNotStandart() {
+	int number1 = toChangeNegativeNumbers(1001);
+	int number2 = toChangeNegativeNumbers(-1002);
+	int size1 = sizeBinary(number1);
+	int size2 = sizeBinary(number2);
+	bool* binaryNumber1 = (bool*)calloc(12, sizeof(int));
+	bool* binaryNumber2 = (bool*)calloc(12, sizeof(int));
+	translateDecimalToBinary(binaryNumber1, size1, number1);
+	translateDecimalToBinary(binaryNumber2, size2, number2);
+	bool* binaryNumber3 = (bool*)calloc(12, sizeof(int));
+	sumToBinary(binaryNumber1, binaryNumber2, binaryNumber3, size1, size2);
+	free(binaryNumber1);
+	free(binaryNumber2);
+	int result = binaryToDecimal(binaryNumber3);
+	free(binaryNumber3);
+	return result == -1;
+}
+
 int main() {
 	setlocale(LC_ALL, "RUS");
+	
+	if (!testStandart() || !testNotStandart()) {
+		printf("%s", "Тесты не пройдены\n");
+		return 0;
+	} else {
+		printf("%s", "Тесты успешно пройдены\n");
+	}
+	
 	printf("%s", "Введите два числа, которые затем будут преобразованы в двоичное представление.Числа и их сумма должны быть меньше 2048 по модулю\n");
 	int number1 = scanOne();
 	while (abs(number1) >= 2048) {
