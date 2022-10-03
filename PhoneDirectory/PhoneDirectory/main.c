@@ -1,28 +1,120 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <locale.h>
+#include < string.h >
 
-int scanOne();
+int scanOneInt();
 
+void addRecord(char number[], char name[]) {
+	FILE *file = fopen("test.txt", "a");
+	if (file == NULL) {
+		printf("Файл не найден!");
+		return;
+	}
+	fprintf(file, "%s\n", name);
+	fprintf(file, "%s\n", number);
 
+	fclose(file);
+}
+
+void printRecords(void) {
+	FILE *file = fopen("test.txt", "r");
+	if (file == NULL) {
+		printf("Файл не найден!");
+		return;
+	}
+	char data[100] = { '\0' };
+	while (fscanf(file, "%s", data) == 1)
+	{
+		printf("%s\n", data);
+	}
+
+	fclose(file);
+}
+
+void findNumberByName(char name[]) {
+
+}
+
+void findNameByNumber(char number[]) {
+
+}
+
+void saveInformation(void) {
+
+}
 
 void talkWithUser() {
 	printf("%s", "Введите команду.0 - выйти, 1 - добавить запись(имя и телефон), 2 - распечатать все имеющиеся записи, 3 - найти телефон по имени, 4 - найти имя по телефону, 5 - сохранить текущие данные в файл \n");
 	
-	int comand = scanOne();
+	int comand = scanOneInt();
 	
 	while (comand < 0 || comand > 5) {
 		printf("%s\n", "Такие команды отсутствуют.Повторите попытку");
-		comand = scanOne();
+		comand = scanOneInt();
 	}
 
 	while (comand != 0) {
-		
+		if (comand == 1) {
+			printf("%s\n", "Введите имя, а затем номер. Размер имени и номера должен быть меньше 100 символов");
+			char name[100] = { '\0' };
+			int checkScanf = scanf("%s", &name);
+			while (checkScanf != 1 || (int)strlen(name) >= 100) {
+				while (getchar() != '\n') {
+				}
+
+				printf("%s", "Ошибка... Проверьте правильность ввода \n");
+				checkScanf = scanf("%s", &name);
+			}
+			char number[100] = { '\0' };
+			checkScanf = scanf("%s", &number);
+			while (checkScanf != 1 || (int)strlen(number) >= 100) {
+				while (getchar() != '\n') {
+				}
+
+				printf("%s", "Ошибка... Проверьте правильность ввода \n");
+				checkScanf = scanf("%s", &number);
+			}
+			addRecord(number, name);
+		}
+		if (comand == 2) {
+			printRecords();
+		}
+		if (comand == 3) {
+			printf("%s\n", "Введите имя. Размер имени должен быть меньше 100 символов");
+			char name[100] = {'\0'};
+			int checkScanf = scanf("%s", &name);
+			while (checkScanf != 1 || (int)strlen(name) >= 100) {
+				while (getchar() != '\n') {
+				}
+
+				printf("%s", "Ошибка... Проверьте правильность ввода \n");
+				checkScanf = scanf("%s", &name);
+			}
+
+			findNumberByName(name);
+		}
+		if (comand == 4) {
+			printf("%s\n", "Введите номер.");
+			char number[100] = { '\0' };
+			int checkScanf = scanf("%s", &number);
+			while (checkScanf != 1 || (int)strlen(number) >= 100) {
+				while (getchar() != '\n') {
+				}
+
+				printf("%s", "Ошибка... Проверьте правильность ввода \n");
+				checkScanf = scanf("%s", &number);
+			}
+			findNameByNumber(number);
+		}
+		if (comand == 5) {
+			saveInformation();
+		}
 		printf("%s\n", "Введите последующую команду.(0 - если хотите выйти)");
-		comand = scanOne();
+		comand = scanOneInt();
 		while (comand < 0 || comand > 5) {
 			printf("%s\n", "Такие команды отсутствуют.Повторите попытку");
-			comand = scanOne();
+			comand = scanOneInt();
 		}
 	}
 }
@@ -32,7 +124,7 @@ int main() {
 	talkWithUser();
 }
 
-int scanOne() {
+int scanOneInt() {
 	int number = 0;
 	int checkScanf = scanf("%d", &number);
 
