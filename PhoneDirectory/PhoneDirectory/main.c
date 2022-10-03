@@ -2,8 +2,22 @@
 #include <stdlib.h>
 #include <locale.h>
 #include < string.h >
+#include <stdbool.h>
 
 int scanOneInt();
+
+bool isStringEqual(char string1[], char string2[]) {
+	const size_t lengthString1 = strlen(string1);
+	const size_t lengthString2 = strlen(string2);
+	size_t i = 0;
+	while (i < lengthString1 && i < lengthString2) {
+		if (string1[i] != string2[i]) {
+			return false;
+		}
+		++i;
+	}
+	return lengthString1 - lengthString2 == 0;
+}
 
 void addRecord(char number[], char name[]) {
 	FILE *file = fopen("test.txt", "a");
@@ -33,7 +47,26 @@ void printRecords(void) {
 }
 
 void findNumberByName(char name[]) {
+	FILE* file = fopen("test.txt", "r");
+	if (file == NULL) {
+		printf("Файл не найден!");
+		return;
+	}
+	char data[100] = { '\0' };
+	bool isNeedPrint = false;
+	while (fscanf(file, "%s", data) == 1)
+	{
+		if (isNeedPrint) {
+			printf("%s\n", data);
+			break;
+		}
 
+		if (isStringEqual(data, name)) {
+			isNeedPrint = true;
+		}
+	}
+
+	fclose(file);
 }
 
 void findNameByNumber(char number[]) {
