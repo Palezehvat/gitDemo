@@ -70,7 +70,33 @@ void findNumberByName(char name[]) {
 }
 
 void findNameByNumber(char number[]) {
+	FILE* file = fopen("test.txt", "r");
+	if (file == NULL) {
+		printf("Файл не найден!");
+		return;
+	}
+	char data[100] = { '\0' };
+	char last[100] = { '\0' };
+	while (fscanf(file, "%s", data) == 1)
+	{
+		if (isStringEqual(data, number)) {
+			printf("%s\n", last);
+			break;
+		}
 
+		const size_t lengthLast = strlen(last);
+		for (size_t i = 0; i < lengthLast; ++i) {
+			last[i] = '\0';
+		}
+
+		const size_t lengthData = strlen(data);
+		for (size_t i = 0; i < lengthData; ++i) {
+			last[i] = data[i];
+		}
+
+	}
+
+	fclose(file);
 }
 
 void saveInformation(void) {
