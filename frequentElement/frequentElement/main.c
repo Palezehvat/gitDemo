@@ -71,9 +71,7 @@ int frequentElement(int* arrayOut, int size) {
 	if (arrayOut == NULL) {
 		return 0;
 	}
-	if (size == 0) {
-		return 0;
-	}
+
 	int commonElement = arrayOut[0];
 	int quantityCommonElement = 1;
 	int counter = 1;
