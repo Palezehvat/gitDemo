@@ -5,6 +5,45 @@
 #include <stdbool.h>
 
 int scanOneInt();
+void addRecord(char number[], char name[], char listOfString[100][100], int records);
+bool isStringEqual(char string1[], char string2[]);
+void findNumberByName(char name[]);
+void findNameByNumber(char number[]);
+void saveInformation(char listOfStrings[100][100], int records);
+
+bool testAddRecord(char arrayOut[100][100]) {
+	int records = 0;
+	char name1[5] = { 'I','l','y','a', '\0'};
+	char number1[12] = {'8','8','0','0','3','5','5','3','5','3','5','\0'};
+	addRecord(number1, name1, arrayOut, records);
+	saveInformation(arrayOut, records);
+	records += 2;
+	char name2[5] = { 'T', 'i', 'm', 'a', '\0'};
+	char number2[12] = { '8','9','0','9','5','9','0','3','0','1','6','\0'};
+	addRecord(number2, name2, arrayOut, records);
+	if (!isStringEqual(arrayOut[0], name1)) {
+		return false;
+	}
+	if (!isStringEqual(arrayOut[1], number1)) {
+		return false;
+	}
+	if (!isStringEqual(arrayOut[2], name2)) {
+		return false;
+	}
+	if (!isStringEqual(arrayOut[3], number2)) {
+		return false;
+	}
+	return true;
+}
+
+bool testFindNumberByName() {
+
+}
+
+bool testFindNameByNumber() {
+
+
+}
 
 bool isStringEqual(char string1[], char string2[]) {
 	const size_t lengthString1 = strlen(string1);
@@ -199,6 +238,13 @@ void talkWithUser() {
 
 int main() {
 	setlocale(LC_ALL, "RUS");
+	char arrayOut[100][100] = { '\0' };
+	if (testAddRecord(arrayOut)) {
+		printf("%s", "Тесты успешно пройдены!\n");
+	} else {
+		printf("%s", "Тесты не пройдены...");
+		return 0;
+	}
 	talkWithUser();
 }
 
