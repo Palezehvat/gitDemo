@@ -1,12 +1,25 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <locale.h>
+#include <stdbool.h>
 
 int scanOne();
 void qSort(int* arrayOut, int startArray, int endArray);
 int partition(int* arrayOut, int startArray, int endArray);
 void insertSort(int* arrayOut, int startArray, int endArray);
+int frequentElement(int* arrayOut, int size);
 
+bool testNormalValue() {
+	int arrayOut[10] = { 1, 2, 2, 3, 5, 3, 4, 3, 6, 7 };
+	qSort(arrayOut, 0, 9);
+	return frequentElement(arrayOut, 10) == 3;
+}
+
+bool testAnotherValue() {
+	int arrayOut[1] = { 100 };
+	qSort(arrayOut, 0, 0);
+	return frequentElement(arrayOut, 1) == 100;
+}
 void insertSort(int* arrayOut, int startArray, int endArray) {
 	if (arrayOut != NULL) {
 		for (int i = startArray + 1; i <= endArray; ++i) {
@@ -55,8 +68,11 @@ void qSort(int* arrayOut, int startArray, int endArray) {
 }
 
 int frequentElement(int* arrayOut, int size) {
+	if (arrayOut == NULL) {
+		return 0;
+	}
 	if (size == 0) {
-		return 1 / 0;
+		return 0;
 	}
 	int commonElement = arrayOut[0];
 	int quantityCommonElement = 1;
@@ -80,6 +96,11 @@ int frequentElement(int* arrayOut, int size) {
 
 int main() {
 	setlocale(LC_ALL, "RUS");
+	if (!testNormalValue() || !testAnotherValue()) {
+		printf("%s\n", "ќшибка в тестах...");
+	} else {
+		printf("%s\n", "ќшибок нет!");
+	}
 	printf("%s\n", "¬ведите размер массива");
 	int size = scanOne();
 	printf("%s\n", "¬ведите элементы массива");
