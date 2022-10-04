@@ -10,6 +10,7 @@ bool isStringEqual(char string1[], char string2[]);
 void findNumberByName(char name[], char data[]);
 void findNameByNumber(char number[], char data[]);
 void saveInformation(char listOfStrings[100][100], int records);
+void printRecords(char arrayOut[100][100]);
 
 bool testAddRecord(char arrayOut[100][100]) {
 	int records = 0;
@@ -84,6 +85,17 @@ bool testSaveInformation(char arrayOut[100][100]) {
 	return true;
 }
 
+bool testPrint(char arrayOut[100][100]) {
+	char data[100][100] = { '0' };
+	printRecords(data);
+	for (int i = 0; i < 4; ++i) {
+		if (!isStringEqual(data[i], arrayOut[i])) {
+			return false;
+		}
+	}
+	return true;
+}
+
 bool isStringEqual(char string1[], char string2[]) {
 	const size_t lengthString1 = strlen(string1);
 	const size_t lengthString2 = strlen(string2);
@@ -109,16 +121,21 @@ void addRecord(char number[], char name[], char listOfString[100][100], int reco
 	}
 }
 
-void printRecords(void) {
+void printRecords(char arrayOut[100][100]) {
 	FILE *file = fopen("listOfNumbersAndNames.txt", "r");
 	if (file == NULL) {
 		printf("Файл не найден!");
 		return;
 	}
 	char data[100] = { '\0' };
+	int i = 0;
 	while (fscanf(file, "%s", data) == 1)
 	{
-		printf("%s\n", data);
+		size_t sizeData = strlen(data);
+		for (size_t j = 0; j < sizeData; ++j) {
+			arrayOut[i][j] = data[j];
+		}
+		++i;
 	}
 
 	fclose(file);
@@ -233,7 +250,17 @@ void talkWithUser() {
 			printf("%s", "Вы ввели слишком много записей\n");
 		}
 		if (comand == 2) {
-			printRecords();
+			char arrayOut[100][100] = {'\0'};
+			printRecords(arrayOut);
+			int i = 0;
+			while (i < 100 && strlen(arrayOut[i])){
+				size_t sizeArrayOut = strlen(arrayOut[i]);
+				for (int j = 0; j < sizeArrayOut; ++j) {
+					printf("%c", arrayOut[i][j]);
+				}
+				++i;
+				printf("\n");
+			}
 		}
 		if (comand == 3) {
 			printf("%s\n", "Введите имя. Размер имени должен быть меньше 100 символов");
@@ -285,11 +312,16 @@ void talkWithUser() {
 int main() {
 	setlocale(LC_ALL, "RUS");
 	char arrayOut[100][100] = { '\0' };
-	if (testAddRecord(arrayOut) && testSaveInformation(arrayOut) && testFindNameByNumber(arrayOut) && testFindNumberByName(arrayOut)) {
-		printf("%s", "Тесты успешно пройдены!\n");
-	} else {
-		printf("%s", "Тесты не пройдены...");
-		return 0;
+	printf("%s", "Нужны ли вам тесты? Если да то введите 1, однако при тестах в файл будут записаны тестовые значения и вам придётся самостоятельно их убрать\n");
+	int isNeedTests = scanOneInt();
+	if (isNeedTests == 1) {
+		if (testAddRecord(arrayOut) && testSaveInformation(arrayOut) && testFindNameByNumber(arrayOut) && testFindNumberByName(arrayOut) && testPrint(arrayOut)) {
+			printf("%s", "Тесты успешно пройдены!\n");
+		}
+		else {
+			printf("%s", "Тесты не пройдены...");
+			return 0;
+		}
 	}
 	talkWithUser();
 }
