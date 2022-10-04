@@ -19,16 +19,16 @@ bool isStringEqual(char string1[], char string2[]) {
 	return lengthString1 - lengthString2 == 0;
 }
 
-void addRecord(char number[], char name[]) {
-	FILE *file = fopen("listOfNumbersAndNames.txt", "a");
-	if (file == NULL) {
-		printf("Файл не найден!");
-		return;
+void addRecord(char number[], char name[], char listOfString[100][100], int records) {
+	const size_t lengthName = strlen(name);
+	for (size_t i = 0; i < lengthName; ++i) {
+		listOfString[records][i] = name[i];
 	}
-	fprintf(file, "%s\n", name);
-	fprintf(file, "%s\n", number);
-
-	fclose(file);
+	++records;
+	const size_t lengthNumber = strlen(number);
+	for (size_t i = 0; i < lengthNumber; ++i) {
+		listOfString[records][i] = number[i];
+	}
 }
 
 void printRecords(void) {
@@ -99,8 +99,21 @@ void findNameByNumber(char number[]) {
 	fclose(file);
 }
 
-void saveInformation(void) {
+void saveInformation(char listOfStrings[100][100], int records) {
+	FILE* file = fopen("listOfNumbersAndNames.txt", "a");
+	if (file == NULL) {
+		printf("Файл не найден!");
+		return;
+	}
+	int i = 0;
+	while (i < records) {
+		fprintf(file, "%s\n", listOfStrings[i]);
+		++i;
+		fprintf(file, "%s\n", listOfStrings[i]);
+		++i;
+	}
 
+	fclose(file);
 }
 
 void talkWithUser() {
@@ -113,8 +126,11 @@ void talkWithUser() {
 		comand = scanOneInt();
 	}
 
+	char listOfString[100][100] = { '\0' };
+	int records = 0;
+
 	while (comand != 0) {
-		if (comand == 1) {
+		if (comand == 1 && records < 100) {
 			printf("%s\n", "Введите имя, а затем номер. Размер имени и номера должен быть меньше 100 символов");
 			char name[100] = { '\0' };
 			int checkScanf = scanf("%s", &name);
@@ -134,7 +150,10 @@ void talkWithUser() {
 				printf("%s", "Ошибка... Проверьте правильность ввода \n");
 				checkScanf = scanf("%s", &number);
 			}
-			addRecord(number, name);
+			addRecord(number, name, listOfString, records);
+			records += 2;
+		} else if (comand == 1) {
+			printf("%s", "Вы ввели слишком много записей\n");
 		}
 		if (comand == 2) {
 			printRecords();
@@ -167,7 +186,7 @@ void talkWithUser() {
 			findNameByNumber(number);
 		}
 		if (comand == 5) {
-			saveInformation();
+			saveInformation(listOfString, records);
 		}
 		printf("%s\n", "Введите последующую команду.(0 - если хотите выйти)");
 		comand = scanOneInt();
