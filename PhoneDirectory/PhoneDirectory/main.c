@@ -7,8 +7,8 @@
 int scanOneInt();
 void addRecord(char number[], char name[], char listOfString[100][100], int records);
 bool isStringEqual(char string1[], char string2[]);
-void findNumberByName(char name[]);
-void findNameByNumber(char number[]);
+void findNumberByName(char name[], char data[]);
+void findNameByNumber(char number[], char data[]);
 void saveInformation(char listOfStrings[100][100], int records);
 
 bool testAddRecord(char arrayOut[100][100]) {
@@ -37,12 +37,51 @@ bool testAddRecord(char arrayOut[100][100]) {
 }
 
 bool testFindNumberByName() {
-
+	char data[100] = { '\0' };
+	char name[5] = { 'I','l','y','a', '\0' };
+	char number[12] = { '8','8','0','0','3','5','5','3','5','3','5','\0' };
+	
+	findNumberByName(name, data);
+	return isStringEqual(data, number);
 }
 
 bool testFindNameByNumber() {
+	char data[100] = { '\0' };
+	char name[5] = { 'I','l','y','a', '\0' };
+	char number[12] = { '8','8','0','0','3','5','5','3','5','3','5','\0' };
 
+	findNameByNumber(number, data);
+	return isStringEqual(data, name);
+}
 
+bool testSaveInformation(char arrayOut[100][100]) {
+	saveInformation(arrayOut, 4);
+	FILE* file = fopen("listOfNumbersAndNames.txt", "r");
+	if (file == NULL) {
+		printf("Файл не найден!");
+		return;
+	}
+	char data[100] = { '\0' };
+	int i = 0;
+	while (fscanf(file, "%s", data) == 1)
+	{
+		if (i == 0 && !isStringEqual(data, "Ilya")) {
+			return false;
+		}
+		if (i == 1 && !isStringEqual(data, "88003553535")) {
+			return false;
+		}
+		if (i == 2 && !isStringEqual(data, "Tima")) {
+			return false;
+		}
+		if (i == 3 && !isStringEqual(data, "89095903016")) {
+			return false;
+		}
+		++i;
+	}
+
+	fclose(file);
+	return true;
 }
 
 bool isStringEqual(char string1[], char string2[]) {
@@ -85,18 +124,17 @@ void printRecords(void) {
 	fclose(file);
 }
 
-void findNumberByName(char name[]) {
+void findNumberByName(char name[], char data[]) {
 	FILE* file = fopen("listOfNumbersAndNames.txt", "r");
 	if (file == NULL) {
 		printf("Файл не найден!");
 		return;
 	}
-	char data[100] = { '\0' };
 	bool isNeedPrint = false;
 	while (fscanf(file, "%s", data) == 1)
 	{
 		if (isNeedPrint) {
-			printf("%s\n", data);
+			return data;
 			break;
 		}
 
@@ -104,22 +142,21 @@ void findNumberByName(char name[]) {
 			isNeedPrint = true;
 		}
 	}
-
+	
 	fclose(file);
 }
 
-void findNameByNumber(char number[]) {
+void findNameByNumber(char number[],char last[]) {
 	FILE* file = fopen("listOfNumbersAndNames.txt", "r");
 	if (file == NULL) {
 		printf("Файл не найден!");
 		return;
 	}
 	char data[100] = { '\0' };
-	char last[100] = { '\0' };
 	while (fscanf(file, "%s", data) == 1)
 	{
 		if (isStringEqual(data, number)) {
-			printf("%s\n", last);
+			return last;
 			break;
 		}
 
@@ -167,6 +204,7 @@ void talkWithUser() {
 
 	char listOfString[100][100] = { '\0' };
 	int records = 0;
+	char data[100] = { '\0' };
 
 	while (comand != 0) {
 		if (comand == 1 && records < 100) {
@@ -209,7 +247,11 @@ void talkWithUser() {
 				checkScanf = scanf("%s", &name);
 			}
 
-			findNumberByName(name);
+			findNumberByName(name, data);
+			printf("%s", data);
+			for (int i = 0; i < 100; ++i) {
+				data[i] = '\0';
+ 			}
 		}
 		if (comand == 4) {
 			printf("%s\n", "Введите номер.");
@@ -222,7 +264,11 @@ void talkWithUser() {
 				printf("%s", "Ошибка... Проверьте правильность ввода \n");
 				checkScanf = scanf("%s", &number);
 			}
-			findNameByNumber(number);
+			findNameByNumber(number, data);
+			printf("%s", data);
+			for (int i = 0; i < 100; ++i) {
+				data[i] = '\0';
+			}
 		}
 		if (comand == 5) {
 			saveInformation(listOfString, records);
@@ -239,7 +285,7 @@ void talkWithUser() {
 int main() {
 	setlocale(LC_ALL, "RUS");
 	char arrayOut[100][100] = { '\0' };
-	if (testAddRecord(arrayOut)) {
+	if (testAddRecord(arrayOut) && testSaveInformation(arrayOut) && testFindNameByNumber(arrayOut) && testFindNumberByName(arrayOut)) {
 		printf("%s", "Тесты успешно пройдены!\n");
 	} else {
 		printf("%s", "Тесты не пройдены...");
