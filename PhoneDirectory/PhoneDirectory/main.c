@@ -20,7 +20,7 @@ bool isStringEqual(char string1[], char string2[]) {
 }
 
 void addRecord(char number[], char name[]) {
-	FILE *file = fopen("test.txt", "a");
+	FILE *file = fopen("listOfNumbersAndNames.txt", "a");
 	if (file == NULL) {
 		printf("Файл не найден!");
 		return;
@@ -32,7 +32,7 @@ void addRecord(char number[], char name[]) {
 }
 
 void printRecords(void) {
-	FILE *file = fopen("test.txt", "r");
+	FILE *file = fopen("listOfNumbersAndNames.txt", "r");
 	if (file == NULL) {
 		printf("Файл не найден!");
 		return;
@@ -47,7 +47,7 @@ void printRecords(void) {
 }
 
 void findNumberByName(char name[]) {
-	FILE* file = fopen("test.txt", "r");
+	FILE* file = fopen("listOfNumbersAndNames.txt", "r");
 	if (file == NULL) {
 		printf("Файл не найден!");
 		return;
@@ -70,7 +70,7 @@ void findNumberByName(char name[]) {
 }
 
 void findNameByNumber(char number[]) {
-	FILE* file = fopen("test.txt", "r");
+	FILE* file = fopen("listOfNumbersAndNames.txt", "r");
 	if (file == NULL) {
 		printf("Файл не найден!");
 		return;
