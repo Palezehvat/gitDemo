@@ -54,6 +54,30 @@ void qSort(int* arrayOut, int startArray, int endArray) {
 	}
 }
 
+int frequentElement(int* arrayOut, int size) {
+	if (size == 0) {
+		return 1 / 0;
+	}
+	int commonElement = arrayOut[0];
+	int quantityCommonElement = 1;
+	int counter = 1;
+	for (int i = 1; i < size; ++i) {
+		if (arrayOut[i - 1] != arrayOut[i]) {
+			if (counter > quantityCommonElement) {
+				quantityCommonElement = counter;
+				commonElement = arrayOut[i - 1];
+			}
+			counter = 0;
+		}
+		++counter;
+	}
+	if (counter > quantityCommonElement) {
+		quantityCommonElement = counter;
+		commonElement = arrayOut[size - 1];
+	}
+	return commonElement;
+}
+
 int main() {
 	setlocale(LC_ALL, "RUS");
 	printf("%s\n", "¬ведите размер массива");
@@ -67,9 +91,9 @@ int main() {
 		arrayOut[i] = scanOne();
 	}
 	qSort(arrayOut, 0, size - 1);
-	for (int i = 0; i < size; ++i) {
-		printf("%d ", arrayOut[i]);
-	}
+	int number = frequentElement(arrayOut, size);
+	printf("%s %d\n", "—амый встречаемый элемент: ", number);
+	free(arrayOut);
 }
 
 int scanOne() {
