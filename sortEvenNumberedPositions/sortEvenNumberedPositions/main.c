@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <locale.h>
+#include <stdbool.h>
 
 int scanOne();
 
@@ -64,15 +65,35 @@ void sortEvenNumberedPositions(int* arrayOut, int size) {
 	}
 	qSort(arrayEvenNumbered, 0, sizeEvenNumberedArray - 1);
 	int k = 0;
-	for (int i = 0; i < size; i += 2) {
+	int i = 0;
+	while (k < sizeEvenNumberedArray && i < size) {
 		arrayOut[i] = arrayEvenNumbered[k];
 		++k;
+		i += 2;
 	}
 	free(arrayEvenNumbered);
 }
 
+bool test() {
+	int arrayOut[5] = { 5, 4, 3, 2, 1 };
+	int arrayNeed[5] = { 1, 4, 3, 2, 5 };
+	sortEvenNumberedPositions(arrayOut, 5);
+	for (int i = 0; i < 5; ++i) {
+		if (arrayOut[i] != arrayNeed[i]) {
+			return false;
+		}
+	}
+	return true;
+}
+
 int main() {
 	setlocale(LC_ALL, "RUS");
+	if (test()) {
+		printf("Тесты пройдены успешно\n");
+	} else {
+		printf("Тесты не пройдены\n");
+		return -1;
+	}
 	printf("Введите размер массива\n");
 	int size = scanOne();
 	int* arrayOut = (int*)calloc(size, sizeof(int));
