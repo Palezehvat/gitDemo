@@ -52,7 +52,19 @@ void qSort(int* arrayOut, int startArray, int endArray) {
 }
 
 void sortEvenNumberedPositions(int* arrayOut, int size) {
-	
+	int sizeEvenNumberedArray = size % 2 == 0 ? size / 2 : size / 2 + 1;
+	int* arrayEvenNumbered = (int*)calloc(sizeEvenNumberedArray, sizeof(int));
+	if (arrayEvenNumbered == NULL) {
+		return;
+	}
+	int j = 0;
+	for (int i = 0; i < sizeEvenNumberedArray; ++i) {
+		arrayEvenNumbered[i] = arrayOut[j];
+		j += 2;
+	}
+	for (int i = 0; i < sizeEvenNumberedArray; ++i) {
+		printf("%d ", arrayEvenNumbered[i]);
+	}
 }
 
 int main() {
@@ -63,10 +75,11 @@ int main() {
 	if (arrayOut == NULL) {
 		return -1;
 	}
+	printf("¬ведите элементы\n");
 	for (int i = 0; i < size; ++i) {
 		arrayOut[i] = scanOne();
 	}
-
+	sortEvenNumberedPositions(arrayOut, size);
 	free(arrayOut);
 }
 
