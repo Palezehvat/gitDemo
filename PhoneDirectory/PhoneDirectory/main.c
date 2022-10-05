@@ -55,6 +55,22 @@ bool testFindNameByNumber() {
 	return isStringEqual(data, name);
 }
 
+int whichSizeFile(void) {
+	FILE* file = fopen("listOfNumbersAndNames.txt", "r");
+	if (file == NULL) {
+		printf("Файл не найден!");
+		return;
+	}
+	char data[100] = { '\0' };
+	int sizeFile = 0;
+	while (fscanf(file, "%s", data) == 1) {
+		++sizeFile;
+	}
+
+	fclose(file);
+	return sizeFile;
+}
+
 bool testSaveInformation(char arrayOut[100][100]) {
 	saveInformation(arrayOut, 4);
 	FILE* file = fopen("listOfNumbersAndNames.txt", "r");
@@ -64,18 +80,19 @@ bool testSaveInformation(char arrayOut[100][100]) {
 	}
 	char data[100] = { '\0' };
 	int i = 0;
+	int sizeFile = whichSizeFile();
 	while (fscanf(file, "%s", data) == 1)
 	{
-		if (i == 0 && !isStringEqual(data, "Ilya")) {
+		if (sizeFile - i == 4 && !isStringEqual(data, "Ilya")) {
 			return false;
 		}
-		if (i == 1 && !isStringEqual(data, "88003553535")) {
+		if (sizeFile - i == 3 && !isStringEqual(data, "88003553535")) {
 			return false;
 		}
-		if (i == 2 && !isStringEqual(data, "Tima")) {
+		if (sizeFile - i == 2 && !isStringEqual(data, "Tima")) {
 			return false;
 		}
-		if (i == 3 && !isStringEqual(data, "89095903016")) {
+		if (sizeFile - i == 1 && !isStringEqual(data, "89095903016")) {
 			return false;
 		}
 		++i;
@@ -86,11 +103,16 @@ bool testSaveInformation(char arrayOut[100][100]) {
 }
 
 bool testPrint(char arrayOut[100][100]) {
+	int sizeFile = whichSizeFile();
 	char data[100][100] = { '0' };
 	printRecords(data);
-	for (int i = 0; i < 4; ++i) {
-		if (!isStringEqual(data[i], arrayOut[i])) {
+	int j = 0;
+	for (int i = 0; i < sizeFile; ++i) {
+		if (sizeFile - i <= 4 && !isStringEqual(data[i], arrayOut[j])) {
 			return false;
+		}
+		if (sizeFile - i <= 4) {
+			++j;
 		}
 	}
 	return true;
@@ -275,7 +297,7 @@ void talkWithUser() {
 			}
 
 			findNumberByName(name, data);
-			printf("%s", data);
+			printf("%s\n", data);
 			for (int i = 0; i < 100; ++i) {
 				data[i] = '\0';
  			}
@@ -292,7 +314,7 @@ void talkWithUser() {
 				checkScanf = scanf("%s", &number);
 			}
 			findNameByNumber(number, data);
-			printf("%s", data);
+			printf("%s\n", data);
 			for (int i = 0; i < 100; ++i) {
 				data[i] = '\0';
 			}
