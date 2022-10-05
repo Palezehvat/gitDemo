@@ -6,15 +6,19 @@
 int theMostCommonElement() {
 	FILE* file = fopen("Data.txt", "a");
 	if (file == NULL) {
-		printf("%s", "Файл не найден!");
+		printf("Файл не найден!");
 		return -1;
 	}
-	int size = fscanf(file, "%d", &size) != 1;
+	int size = 0;
+	if (fscanf(file, "%d", &size) < 0) {
+		printf("Ошибка ввода\n");
+		return -1;
+	}
 	
 	printf("%d", size);
 	int i = 0;
 	int* arrayOut = (int*)calloc(size, sizeof(int));
-	while (fscanf(file, "%d", &arrayOut[i]) == 1) {
+	while (fscanf(file, "%d", &arrayOut[i]) >= 0) {
 		++i;
 	}
 
