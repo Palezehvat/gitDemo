@@ -1,6 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <locale.h>
+#include <stdbool.h>
+
+bool test() {
+	return fibonacciIterative() == 1089154;
+}
 
 int fibonacciIterative() {
 	int firstElement = 1;
@@ -20,12 +25,17 @@ int fibonacciIterative() {
 			sumElements += firstElement;
 		}
 		lastSecondElement = secondElement;
-		//printf("%d %d %d\n", firstElement, secondElement, sumElements);
 	}
-	return firstElement + secondElement;
+	return sumElements;
 }
 
 int main() {
 	setlocale(LC_ALL, "RUS");
+	if (test()) {
+		printf("Все тесты пройдены успешно!\n");
+	} else {
+		printf("Тесты не пройдены...\n");
+		return -1;
+	}
 	printf("%d", fibonacciIterative());
 }
