@@ -62,9 +62,13 @@ void sortEvenNumberedPositions(int* arrayOut, int size) {
 		arrayEvenNumbered[i] = arrayOut[j];
 		j += 2;
 	}
-	for (int i = 0; i < sizeEvenNumberedArray; ++i) {
-		printf("%d ", arrayEvenNumbered[i]);
+	qSort(arrayEvenNumbered, 0, sizeEvenNumberedArray - 1);
+	int k = 0;
+	for (int i = 0; i < size; i += 2) {
+		arrayOut[i] = arrayEvenNumbered[k];
+		++k;
 	}
+	free(arrayEvenNumbered);
 }
 
 int main() {
@@ -80,6 +84,9 @@ int main() {
 		arrayOut[i] = scanOne();
 	}
 	sortEvenNumberedPositions(arrayOut, size);
+	for (int i = 0; i < size; ++i) {
+		printf("%d ", arrayOut[i]);
+	}
 	free(arrayOut);
 }
 
