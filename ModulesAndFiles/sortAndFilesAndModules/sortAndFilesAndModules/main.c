@@ -37,7 +37,6 @@ int theMostCommonElement(char nameFile[]) {
 		}
 		++counter;
 	}
-
 	free(arrayOut);
 	fclose(file);
 	return maxElements;
