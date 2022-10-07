@@ -2,9 +2,10 @@
 #include <stdlib.h>
 #include "qSort.h"
 #include <locale.h>
+#include <stdbool.h>
 
-int theMostCommonElement() {
-	FILE* file = fopen("Data.txt", "a");
+int theMostCommonElement(char nameFile[]) {
+	FILE* file = fopen(nameFile, "r");
 	if (file == NULL) {
 		printf("Файл не найден!");
 		return -1;
@@ -15,7 +16,6 @@ int theMostCommonElement() {
 		return -1;
 	}
 	
-	printf("%d", size);
 	int i = 0;
 	int* arrayOut = (int*)calloc(size, sizeof(int));
 	while (fscanf(file, "%d", &arrayOut[i]) >= 0) {
@@ -43,10 +43,25 @@ int theMostCommonElement() {
 	return maxElements;
 }
 
+bool test() {
+	char buffer[27] = {'t','e','s','t','F','o','r','M','o','d','u','l','e','s','A','n','d','F','i','l','e','s','.','t','x','t','\0'};
+	printf("%s", buffer);
+}
+
 int main() {
 	setlocale(LC_ALL, "RUS");
+	printf("Введите название файла. Пример: test.txt\n");
+
+	char nameFile[100] = {'\0'};
+	int checkScanf = (scanf("%s", &nameFile));
+	while (checkScanf != 1) {
+		while (getchar() != '\n') {
+		}
+		printf("Проверьте правильность ввода...\n");
+		checkScanf = ("%s", &nameFile);
+	}
 	printf("%s", "Далее вам будет выведен самый частый элемент, в отсартированном массиве(сортировка: qSort), считанным из файла\n");
 
-	int number = theMostCommonElement();
+	int number = theMostCommonElement(nameFile);
 	printf("%d", number);
 }
