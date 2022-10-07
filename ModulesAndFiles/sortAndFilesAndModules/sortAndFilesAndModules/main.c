@@ -45,11 +45,18 @@ int theMostCommonElement(char nameFile[]) {
 
 bool test() {
 	char buffer[27] = {'t','e','s','t','F','o','r','M','o','d','u','l','e','s','A','n','d','F','i','l','e','s','.','t','x','t','\0'};
-	printf("%s", buffer);
+
+	return theMostCommonElement(buffer) == 3;
 }
 
 int main() {
 	setlocale(LC_ALL, "RUS");
+	if (test()) {
+		printf("Тесты пройдены успешно\n");
+	} else {
+		printf("Тесты не пройдены\n");
+		return -1;
+	}
 	printf("Введите название файла. Пример: test.txt\n");
 
 	char nameFile[100] = {'\0'};
