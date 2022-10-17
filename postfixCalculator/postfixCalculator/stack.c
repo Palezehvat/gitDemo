@@ -26,11 +26,15 @@ void clear(ElementStack** head) {
 }
 
 int popElements(ElementStack** head, int* errorCode) {
-	if (*head == NULL && errorCode != NULL) {
+	if (*head == NULL) { 
+		if (errorCode != NULL) {
 		*errorCode = -1;
+		}
 		return -1;
 	}
-	*errorCode = 0;
+	if (errorCode != NULL) {
+		*errorCode = 0;
+	}
 
 	int value = (*head)->value;
 
