@@ -28,7 +28,7 @@ void clear(ElementStack** head) {
 int popElements(ElementStack** head, int* errorCode) {
 	if (*head == NULL) { 
 		if (errorCode != NULL) {
-		*errorCode = 0;
+			*errorCode = 0;
 		}
 		return -1;
 	}
@@ -38,5 +38,6 @@ int popElements(ElementStack** head, int* errorCode) {
 	ElementStack* temp = (*head)->next;
 	free(*head);
 	*head = temp;
+
 	return value;
 }
