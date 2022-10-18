@@ -4,13 +4,13 @@
 
 typedef struct ElementStack {
 	struct ElementStack* next;
-	int value;
+	char value;
 } ElementStack;
 
-int pushElements(ElementStack** head, int value);
+int pushElements(ElementStack** head, char value);
 bool isEmpty(ElementStack* head);
 void clear(ElementStack** head);
-int popElements(ElementStack** head, int* errorCode);
+char popElements(ElementStack** head, int* errorCode);
 
 #endif // !STACK_H_
 

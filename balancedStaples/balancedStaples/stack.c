@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-int pushElements(ElementStack** head, int value) {
+int pushElements(ElementStack** head, char value) {
 	ElementStack* temp = malloc(sizeof(ElementStack));
 	if (temp == NULL) {
 		return -1;
@@ -25,7 +25,7 @@ void clear(ElementStack** head) {
 	}
 }
 
-int popElements(ElementStack** head, int* errorCode) {
+char popElements(ElementStack** head, int* errorCode) {
 	if (*head == NULL) {
 		if (errorCode != NULL) {
 			*errorCode = 1;
