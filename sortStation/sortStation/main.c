@@ -48,7 +48,7 @@ bool converterToPostfixForm(char buffer[], char result[]) {
 			}
 			else if (buffer[i] == '*' || buffer[i] == '/') {
 				if (top(operatorActions) == '/' || top(operatorActions) == '*') {
-					while (!isEmpty(operatorActions)) {
+					while (!isEmpty(operatorActions) && (top(operatorActions) == '/' || top(operatorActions) == '*')) {
 						char operations = pop(operatorActions, &errorCode);
 						char symbol[2] = { '\0' };
 						symbol[0] = operations;
@@ -157,11 +157,13 @@ bool secondTest() {
 
 int main() {
 	setlocale(LC_ALL, "RUS");
+
 	if (firstTest() && secondTest()) {
 		printf("Тесты прошли успешно\n");
 	} else {
 		printf("Тесты провалились...\n");
 	}
+
 	printf("Введите строку примера в итеративной форме\n");
 	char buffer[100] = { '\0' };
 	gets_s(buffer, 100);
