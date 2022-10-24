@@ -132,7 +132,23 @@ bool firstTest() {
 
 	for (int i = 0; i < sizeArrayOutput - 1; ++i) {
 		if (bufferNew[i] != arrayOutput[i]) {
-			printf("%c %c", bufferNew[i], arrayOutput[i]);
+			return false;
+		}
+	}
+	return true;
+}
+
+bool secondTest() {
+	char buffer[18] = { '(', '1', ' ', '+', ' ', '2', ')', ' ', '*', ' ', '(', '1', ' ', '+', ' ', '2', ')', '\0' };
+	char arrayOutput[100] = { '\0' };
+	if (!converterToPostfixForm(buffer, arrayOutput)) {
+		return false;
+	}
+	char bufferNew[14] = { '1', ' ', '2', ' ', '+', ' ', '1', ' ', '2', ' ', '+', ' ', '*', '\0' };
+	size_t sizeArrayOutput = strlen(arrayOutput);
+
+	for (int i = 0; i < sizeArrayOutput - 1; ++i) {
+		if (bufferNew[i] != arrayOutput[i]) {
 			return false;
 		}
 	}
@@ -141,7 +157,7 @@ bool firstTest() {
 
 int main() {
 	setlocale(LC_ALL, "RUS");
-	if (firstTest()) {
+	if (firstTest() && secondTest()) {
 		printf("Тесты прошли успешно\n");
 	} else {
 		printf("Тесты провалились...\n");
