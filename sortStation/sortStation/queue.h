@@ -13,7 +13,7 @@ typedef struct Queue {
 
 int enqueue(Queue* queue, char value[]);
 
-char* dequeue(Queue* queue, int* errorCode);
+void dequeue(Queue* queue, int* errorCode, char value[]);
 
 bool isEmptyQueue(Queue queue);
 

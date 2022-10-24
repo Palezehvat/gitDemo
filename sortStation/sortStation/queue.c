@@ -4,12 +4,13 @@
 #include <string.h>
 
 int enqueue(Queue* queue, char value[]) {
-    Node* temp = malloc(sizeof(Node));
+    Node* temp = calloc(1, sizeof(Node));
     if (temp == NULL) {
         printf("Problems with memory allocation");
         return -1;
     }
     size_t sizeValue = strlen(value);
+    memset(temp->value, 0, strlen(temp->value));
     strncpy(temp->value, value, sizeValue);
     temp->next = NULL;
 
@@ -25,7 +26,7 @@ int enqueue(Queue* queue, char value[]) {
     return 0;
 }
 
-char* dequeue(Queue* queue, int* errorCode) {
+void dequeue(Queue* queue, int* errorCode, char value[]) {
     if (queue->head == NULL) {
         if (errorCode != NULL) {
             *errorCode = -1;
@@ -37,19 +38,18 @@ char* dequeue(Queue* queue, int* errorCode) {
         *errorCode = 0;
     }
 
-
-    char value[100] = { '\0' };
     size_t sizeQueueHeadValue = strlen(queue->head->value);
     strncpy(value, queue->head->value, sizeQueueHeadValue);
 
     Node* next = queue->head->next;
-    free(queue->head);
+    //free(queue->head);
+    memset(queue->head->value, 0, strlen(queue->head->value));
+    (queue->head)->next = NULL;
+    queue->head = NULL;
     queue->head = next;
     if (next == NULL) {
         queue->tail = NULL;
     }
-
-    return value;
 }
 
 bool isEmptyQueue(Queue queue) {
@@ -59,6 +59,7 @@ bool isEmptyQueue(Queue queue) {
 void clear(Queue* queue) {
     while (!isEmptyQueue(*queue)) {
         int errorCode = 0;
-        dequeue(queue, &errorCode);
+        dequeue(queue, &errorCode, "");
     }
+    queue = NULL;
 }

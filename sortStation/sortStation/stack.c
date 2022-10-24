@@ -12,7 +12,7 @@ typedef struct Stack {
 } Stack;
 
 int push(Stack* stack, char value) {
-    Node* temp = malloc(sizeof(Node));
+    Node* temp = calloc(1, sizeof(Node));
     if (temp == NULL) {
         printf("Problems with memory allocation");
         return -1;
@@ -54,6 +54,7 @@ void deleteStack(Stack* stack) {
         int errorCode = 0;
         pop(stack, &errorCode);
     }
+    stack = NULL;
 }
 
 Stack* createStack(void) {
