@@ -59,17 +59,26 @@ int insert(List* list, int value) {
 }
 
 void clearList(List* list) {
-    while (list->head->next != NULL) {
-        Node* walker = list->head;
-        while (walker->next != NULL && walker->next->next != NULL) {
-            walker = walker->next;
+    if (list->head != NULL) {
+        while (list->head->next != NULL) {
+            Node* walker = list->head;
+            while (walker->next != NULL && walker->next->next != NULL) {
+                walker = walker->next;
+            }
+            free(walker->next);
+            walker->next = NULL;
         }
-        free(walker->next);
-        walker->next = NULL;
+        free(list->head->next);
+        free(list->head);
     }
-    free(list->head->next);
-    free(list->head);
     list = NULL;
+}
+
+int top(List* list) {
+    if (list->head == NULL) {
+        return -1;
+    }
+    return list->head->value;
 }
 
 int delete(List* list, int value) {

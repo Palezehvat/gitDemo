@@ -15,3 +15,5 @@ bool isEmpty(List* list);
 void clearList(List* list);
 
 List* createList(void);
+
+int top(List* list);

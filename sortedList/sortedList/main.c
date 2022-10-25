@@ -48,8 +48,27 @@ bool talkWithUser(void) {
 	return true;
 }
 
+bool tests() {
+	List* list = createList();
+	insert(list, 100);
+	if (top(list) != 100) {
+		return false;
+	}
+	delete(list, 100);
+	if (top(list) != -1) {
+		return false;
+	}
+	return true;
+}
+
 int main() {
 	setlocale(LC_ALL, "RUS");
+	if (tests()) {
+		printf("Тесты прошли успешно\n");
+	} else {
+		printf("Где-то ошибка...\n");
+		return 0;
+	}
 	bool check = talkWithUser();
 	if (!check) {
 		printf("Произошла ошибка...\n");
