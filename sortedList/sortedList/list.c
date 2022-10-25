@@ -1,9 +1,9 @@
 #include "list.h"
 #include <stdbool.h>
+#include <string.h>
 
 typedef struct Node {
     int value;
-    int position;
     struct Node* next;
 } Node;
 
@@ -11,104 +11,105 @@ struct List {
     Node* head;
 };
 
+void print(List* list) {
+    Node* walker = list->head;
+    while (walker != NULL) {
+        printf("%d ", walker->value);
+        walker = walker->next;
+    }
+    printf("\n");
+}
+
 bool isEmpty(List* list) {
     return list->head == NULL;
 }
 
-int insert(List* list, int value, int position) {
+int insert(List* list, int value) {
     Node* currentNode = list->head;
-    while (currentNode->position != position) {
-        if (currentNode->next == NULL) {
+    if (currentNode != NULL && currentNode->value >= value) {
+        Node* newNode = calloc(1, sizeof(Node));
+        if (newNode == NULL) {
             return -1;
+        }
+        newNode->value = value;
+        newNode->next = currentNode;
+        list->head = newNode;
+        return 0;
+    }
+
+    while (currentNode != NULL) {
+        if (currentNode->next == NULL || currentNode->next->value >= value) {
+            break;
         }
         currentNode = currentNode->next;
     }
 
     Node* newNode = calloc(1, sizeof(Node));
-
+    if (newNode == NULL) {
+        return -1;
+    }
     newNode->value = value;
-    newNode->position = currentNode->position;
-    Node* nextNode = currentNode->next;
-    newNode->next = nextNode;
-
+    if (currentNode == NULL) {
+        list->head = newNode;
+        return 0;
+    }
+    newNode->next = currentNode->next;
     currentNode->next = newNode;
-    while (currentNode != NULL) {
-        ++currentNode->position;
-        currentNode = currentNode->next;
-    }
     return 0;
 }
 
-void print(List* list) {
-    Node* walker = list->head;
-    int i = 0;
-    while (walker != NULL) {
-        printf("%d - %d", i, walker->value);
-        ++i;
-    }
-}
-
-int changeNode(List* list, int position, int value) {
-    Node* walker = list->head;
-    while (walker->position != position - 1) {
-        if (walker->next == NULL) {
-            return -1;
+void clearList(List* list) {
+    while (list->head->next != NULL) {
+        Node* walker = list->head;
+        while (walker->next != NULL && walker->next->next != NULL) {
+            walker = walker->next;
         }
-        walker = walker->next;
+        free(walker->next);
+        walker->next = NULL;
     }
-    if (walker->next != NULL) {
-        walker->next->value = value;
-    }
-    return 0;
+    free(list->head->next);
+    free(list->head);
+    list = NULL;
 }
 
-int clear(List* list) {
-    int i = 0;
-    while (!isEmpty(list)) {
-        if (delete(list, i) == -1) {
-            return -1;
-        }
-        ++i;
-    }
-}
+int delete(List* list, int value) {
+    Node* currentNode = list->head;
 
-int delete(List* list, int position) {
     if (isEmpty(list)) {
         return -1;
     }
-    Node* walker = list->head;
-    while (walker->position != position - 1) {
-        if (walker->next == NULL) {
-            return -1;
-        }
-        walker = walker->next;
-    }
-    Node* temp = NULL;
-    if (walker->next != NULL) {
-        temp = walker->next->next;
-        free(walker->next);
-        walker->next = temp;
+    if (currentNode->value == value) {
+        Node* temp = currentNode->next;
+        free(currentNode);
+        list->head = temp;
         return 0;
     }
-    free(walker->next);
+
+    while (currentNode != NULL) {
+        if (currentNode->next == NULL || currentNode->next->value == value) {
+            if (currentNode->next == NULL && currentNode->value != value) {
+                return -1;
+            }
+            break;
+        }
+        currentNode = currentNode->next;
+    }
+    
+    Node* temp = NULL;
+    if (currentNode == NULL) {
+        return -1;
+    }
+    if (currentNode->next != NULL) {
+        temp = currentNode->next->next;
+        free(currentNode->next);
+        currentNode->next = temp;
+        return 0;
+    }
+    free(currentNode->next);
     return 0;
 }
 
-int findNode(List* list, int position, int* errorCode) {
-    if (isEmpty(list) || position < 0) {
-        *errorCode = -1;
-        return 0;
-    }
-    Node* temp = list->head;
-
-    for (int i = 1; i <= position; ++i) {
-        temp = temp->next;
-        if (temp == NULL) {
-            *errorCode = -1;
-            return 0;
-        }
-    }
-
-    return temp->value;
-
+List* createList(void) {
+    List* list = calloc(1, sizeof(List));
+    return list;
 }

@@ -1,20 +1,17 @@
 #pragma once
-
 #include <stdbool.h>
 #include <stdlib.h>
 
 typedef struct List List;
 
-int insert(List* list, int value, int position);
+int insert(List* list, int value);
 
 void print(List* list);
 
-int delete(List* list, int position);
-
-int changeNode(List* list, int position, int value);
+int delete(List* list, int value);
 
 bool isEmpty(List* list);
 
-int clear(List* list);
+void clearList(List* list);
 
-int findNode(List* list, int position, int* errorCode);
+List* createList(void);
