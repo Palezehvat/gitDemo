@@ -10,12 +10,9 @@ bool scanFile(int arrayOut[], char fileName[]) {
 		printf("Файл не найден!");
 		return false;
 	}
-	char data[100] = { '\0' };
-	while (fscanf(file, "%s", data) == 1) {
-		size_t sizeData = strlen(data);
-		for (int i = 0; i < sizeData; ++i) {
-			++arrayOut[(int)data[i]];
-		}
+	char letter = 0;
+	while ((letter = fgetc(file)) != EOF) {
+			++arrayOut[(int)letter];
 	}
 	fclose(file);
 	return true;
