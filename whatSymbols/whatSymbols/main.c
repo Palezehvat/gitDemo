@@ -4,11 +4,11 @@
 #include <string.h>
 #include <stdbool.h>
 
-int scanFile(int arrayOut[], char fileName[]) {
+bool scanFile(int arrayOut[], char fileName[]) {
 	FILE* file = fopen(fileName, "r");
 	if (file == NULL) {
 		printf("Файл не найден!");
-		return -1;
+		return false;
 	}
 	char data[100] = { '\0' };
 	while (fscanf(file, "%s", data) == 1) {
@@ -18,7 +18,7 @@ int scanFile(int arrayOut[], char fileName[]) {
 		}
 	}
 	fclose(file);
-	return 0;
+	return true;
 }
 
 bool test() {
@@ -26,7 +26,7 @@ bool test() {
 	int arrayOut[128] = { 0 };
 	if (scanFile(arrayOut, fileName) == -1) {
 		printf("Ошибка...\n");
-		return 0;
+		return false;
 	}
 	if (arrayOut[97] != 3 && arrayOut[98] != 2 && arrayOut[99] != 1) {
 		return false;
@@ -49,11 +49,11 @@ int main() {
 
 	while (checkScan != 1) {
 		while (getchar() != '\n') {
-
 		}
+		printf("Ошибка...\n");
 		checkScan = scanf("%s", &fileName);
 	}
-	if (scanFile(arrayOut, fileName) == -1) {
+	if (!scanFile(arrayOut, fileName)) {
 		printf("Ошибка...\n");
 		return 0;
 	}
