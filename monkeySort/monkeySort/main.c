@@ -36,8 +36,22 @@ bool monkeySort(int* arrayOut, int size) {
 	return true;
 }
 
+bool test(void) {
+	int arrayOut[3] = {3, 2, 1};
+	if (!monkeySort(arrayOut, 3)) {
+		return false;
+	}
+	return isSorted(arrayOut, 3);
+}
+
 int main() {
 	setlocale(LC_ALL, "RUS");
+	if (test()) {
+		printf("Тесты прошли успешно!\n");
+	} else {
+		printf("Ошибка...\n");
+		return 0;
+	}
 	printf("Введите размер массива\n");
 	int size = scanOne();
 	if (size == 0) {
