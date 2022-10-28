@@ -11,3 +11,5 @@ List* createList(void);
 int top(List* list);
 
 void addPositions(List* list, int size);
+
+int counting(List* list, int size, int step);
