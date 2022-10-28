@@ -62,6 +62,7 @@ int counting(List* list, int size, int step) {
         newStep = size;
     }
     int i = 0;
+    Node* walkerNext = NULL;
     while (i == 0 && list->head->next != list->head) {
         while (i + 1 < newStep - 1) {
             walker = walker->next;
@@ -70,26 +71,31 @@ int counting(List* list, int size, int step) {
         if (walker->next->next == NULL) {
             return -1;
         }
-        Node* walkerNext = walker->next->next;
+        walkerNext = walker->next->next;
         free(walker->next);
         walker->next = walkerNext;
     }
-
-    while (list->head->next != list->head) {
+    Node* walkerNewNext = NULL;
+    while (list->head != NULL && list->head->next != list->head) {
         int i = 0;
         while (i < newStep - 1) {
             walker = walker->next;
             ++i;
         }
-        Node* walkerNext = walker->next->next;
+        if (walker->next == NULL) {
+            return -1;
+        }
+        walkerNewNext = walker->next->next;
         if (list->head == walker->next) {
-            list->head = walkerNext;
+            list->head = walkerNewNext;
         }
         free(walker->next);
-        walker->next = walkerNext;
+        walker->next = walkerNewNext;
+    }
+    if (list->head == NULL) {
+        return -1;
     }
     int result = list->head->startPosition;
-    printf("%d\n", list->head->next->startPosition);
     free(list->head);
     return result;
 }
