@@ -16,13 +16,80 @@ bool isEmpty(List* list) {
     return list->head == NULL;
 }
 
-void mergeSortByName(List* list, int size) {
-
+//смотрит по индексам два элемента, возвращает значение i, если элемент с индексом i больше, чем элемент с индексом j, возвращает значение j в другом случие
+int isWhichBigger(List* list, int i, int j, int numberOrName) {
+    Node* walkerFirst = list->head;
+    int iWalker = 0;
+    while (iWalker < i && walkerFirst->next != NULL) {
+        ++iWalker;
+        walkerFirst = walkerFirst->next;
+    }
+    Node* walkerSecond = list->head;
+    int jWalker = 0;
+    while (jWalker < j && walkerSecond->next != NULL) {
+        ++jWalker;
+        walkerSecond = walkerSecond->next;
+    }
+    if (numberOrName == 0) {
+        return strcmp(walkerFirst->name, walkerSecond->name) > 0 ? i : j;
+    } else {
+        return strcmp(walkerFirst->number, walkerSecond->number) > 0 ? i : j;
+    }
 }
 
-void mergeSortByNumber(List* list, int size) {
+void toList(List* list, List* listCopy, int positionList, int positionListCopy, int numberOrName, int copyOrMain) {
+    Node* walkerCopy = listCopy->head;
+    int i = 0;
+    while (i < positionListCopy && walkerCopy->next != NULL) {
+        walkerCopy = walkerCopy->next;
+        ++i;
+    }
 
+    Node* walker = list->head;
+    int j = 0;
+    while (j < positionList && walker->next != NULL) {
+        walker = walker->next;
+        ++j;
+    }
 
+    if (copyOrMain == 0) {
+            strcpy(walkerCopy->name, walker->name);
+            strcpy(walkerCopy->number, walker->number);
+    } else {
+            strcpy(walker->name, walkerCopy->name);
+            strcpy(walker->number, walkerCopy->number);
+    }
+}
+
+void mergeSort(int with, int to, List* list, List* listCopy, int numberOrName) {
+    if (to <= with) {
+        return;
+    }
+    
+    int middle = (with + to) / 2;
+    mergeSort(with, middle, list, listCopy, numberOrName);
+    mergeSort(middle + 1, to, list, listCopy, numberOrName);
+
+    int i = with;
+    int j = middle + 1;
+    for (int l = with; l <= to; ++l) {
+        if (i == middle + 1) {
+            toList(list, listCopy, j, l, numberOrName, 0);
+            ++j;
+        } else if (j == to + 1) {
+            toList(list, listCopy, i, l, numberOrName, 0);
+            ++i;
+        } else if (isWhichBigger(list, i, j, numberOrName) == j) {
+            toList(list, listCopy, i, l, numberOrName, 0);
+            ++i;
+        } else {
+            toList(list, listCopy, j, l, numberOrName, 0);
+            ++j;
+        }
+    }
+    for (int k = with; k <= to; ++k) {
+        toList(list, listCopy, k, k, numberOrName, 1);
+    }
 }
 
 int addRecord(List* list, char name[], char number[]) {
@@ -30,14 +97,15 @@ int addRecord(List* list, char name[], char number[]) {
     if (newNode == NULL) {
         return -1;
     }
-    size_t sizeName = strlen(name);
-    memset(newNode->name, 0, strlen(newNode->name));
-    strncpy(newNode->name, name, sizeName);
+    if (name != NULL && number != NULL) {
+        size_t sizeName = strlen(name);
+        memset(newNode->name, 0, strlen(newNode->name));
+        strncpy(newNode->name, name, sizeName);
 
-    size_t sizeNumber = strlen(number);
-    memset(newNode->number, 0, strlen(newNode->number));
-    strncpy(newNode->number, number, sizeNumber);
-
+        size_t sizeNumber = strlen(number);
+        memset(newNode->number, 0, strlen(newNode->number));
+        strncpy(newNode->number, number, sizeNumber);
+    }
     newNode->next = NULL;
 
     if (list->head == NULL) {
@@ -58,6 +126,7 @@ List* createList(void) {
     return list;
 }
 
+/*
 bool isSortedByNumber(List* list) {
     if (list->head == NULL || list->head->next == NULL) {
         return true;
@@ -83,3 +152,4 @@ bool isSortedByNumber(List* list) {
     }
     return true;
 }
+*/

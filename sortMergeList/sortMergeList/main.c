@@ -7,8 +7,9 @@
 
 int scanOne();
 
-bool readFromFile(char fileName[], int sortByNameOrNumber) {
+bool readFromFile(char fileName[], int numberOrName) {
 	List* list = createList();
+	List* listCopy = createList();
 	
 	FILE* file = fopen(fileName, "r");
 	if (file == NULL) {
@@ -20,6 +21,7 @@ bool readFromFile(char fileName[], int sortByNameOrNumber) {
 	char number[100] = { '\0' };
 	char buffer[100] = { '\0' };
 	int stringInfile = 0;
+	int size = 0;
 	while (fscanf(file, "%s", buffer) == 1) {
 		size_t sizeBuffer = strlen(buffer);
 		size_t i = 0;
@@ -35,22 +37,21 @@ bool readFromFile(char fileName[], int sortByNameOrNumber) {
 				++i;
 			}
 			addRecord(list, name, number);
+			addRecord(listCopy, NULL, NULL);
 			memset(name, 0, strlen(name));
 			memset(number, 0, strlen(number));
 			stringInfile = -1;
 		}
 		++stringInfile;
+		++size;
 	}
+	size /= 3;
 	fclose(file);
-	if (sortByNameOrNumber == 0) {
-		mergeSortByNumber(list, 2);
-	} else if (sortByNameOrNumber == 1) {
-		mergeSortByName(list, 2);
-	}
+	mergeSort(0, size - 1, list, listCopy, numberOrName);
 
-	if (strcmp(fileName, "test.txt") == 0) {
-			return isSortedByNumber(list);
-	}
+	//if (strcmp(fileName, "test.txt") == 0) {
+	//		return isSortedByNumber(list);
+	//}
 }
 
 bool test(void) {

@@ -10,8 +10,4 @@ List* createList(void);
 
 int addRecord(List* list, char name[], char number[]);
 
-void mergeSortByName(List* list, int size);
-
-void mergeSortByNumber(List* list, int size);
-
-bool isSortedByNumber(List* list);
+void mergeSort(int with, int to, List* list, List* listCopy, int numberOrName);
