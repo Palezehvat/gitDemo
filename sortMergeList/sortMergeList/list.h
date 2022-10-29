@@ -11,3 +11,9 @@ List* createList(void);
 int addRecord(List* list, char name[], char number[]);
 
 void mergeSort(int with, int to, List* list, List* listCopy, int numberOrName);
+
+bool isSorted(List* list, int numberOrName);
+
+void clear(List* list);
+
+void printList(List* list);

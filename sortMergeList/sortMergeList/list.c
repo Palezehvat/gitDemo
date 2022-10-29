@@ -1,6 +1,8 @@
 #include "list.h"
 #include <stdbool.h>
 #include <string.h>
+#include <stdlib.h>
+#include <stdio.h>
 
 typedef struct Node {
     char number[100];
@@ -110,7 +112,7 @@ int addRecord(List* list, char name[], char number[]) {
 
     if (list->head == NULL) {
         list->head = newNode;
-        return ;
+        return 0;
     }
 
     Node* walker = list->head;
@@ -118,7 +120,7 @@ int addRecord(List* list, char name[], char number[]) {
         walker = walker->next;
     }
     walker->next = newNode;
-    
+    return 0;
 }
 
 List* createList(void) {
@@ -126,30 +128,49 @@ List* createList(void) {
     return list;
 }
 
-/*
-bool isSortedByNumber(List* list) {
+bool isSorted(List* list, int numberOrName) {
     if (list->head == NULL || list->head->next == NULL) {
         return true;
     }
-    Node* walker = list->head;
-    char number[100] = { '\0' };
-    strncpy(number, walker->number, strlen(walker->number));
-    walker = walker->next;
+    Node* walker = list->head->next;
+    int i = 1;
     while (walker->next != NULL) {
-        size_t sizeNumber = strlen(number);
-        size_t sizeListNumber = strlen(walker->number);
-        int i = 0;
-        while (i < sizeNumber && i < sizeListNumber) {
-            if (number[i] > walker->number[i]) {
-                return false;
-            } else if (number[i] < walker->number[i]) {
-                break;
-            }
+        if (isWhichBigger(list, i - 1, i, numberOrName) == i - 1) {
+            return false;
         }
-        memset(number, 0, strlen(number));
-        strncpy(number, walker, strlen(walker->number));
         walker = walker->next;
+        ++i;
     }
     return true;
 }
-*/
+
+void printList(List* list) {
+    if (list->head == NULL) {
+        return ;
+    }
+    Node* walker = list->head;
+    while (walker != NULL) {
+        printf("%s - %s\n", walker->name, walker->number);
+        walker = walker->next;
+    }
+}
+
+void clear(List* list) {
+    if (list->head == NULL) {
+        return;
+    }
+    Node* walker = list->head;
+    while (list->head != NULL) {
+        if (list->head->next == NULL) {
+            free(list->head);
+            free(list);
+            return;
+        }
+        walker = list->head;
+        while (walker->next->next != NULL) {
+            walker = walker->next;
+        }
+        free(walker->next);
+        walker->next = NULL;
+    }
+}
