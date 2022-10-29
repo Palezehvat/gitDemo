@@ -71,7 +71,8 @@ int main() {
 	setlocale(LC_ALL, "RUS");
 	if (test()) {
 		printf("Тест прошёл успешно!\n");
-	} else {
+	}
+	else {
 		printf("Ошибка...\n");
 		return -1;
 	}
@@ -87,6 +88,10 @@ int main() {
 	}
 	printf("Введите почему сортировать(0 - по имени, 1 - по номеру)\n");
 	int sortByNameOrNumber = scanOne();
+	while (sortByNameOrNumber != 0 && sortByNameOrNumber != 1) {
+		printf("Читайте условие внимательнее...\n");
+		sortByNameOrNumber = scanOne();
+	}
 	if (!readFromFile(fileName, sortByNameOrNumber)) {
 		printf("Ошибка с файлом...\n");
 	}
