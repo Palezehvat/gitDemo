@@ -20,15 +20,13 @@ bool talkWithUser(void) {
 				return false;
 			}
 			printf("Введите строку!\n");
-			for (int i = 0; i < size; ++i) {
-				int checkScanf = scanf("%c", &string[i]);
-				while (checkScanf != 1) {
-					while (getchar() != '\n') {
-					}
-
-					printf("Ошибка...\n");
-					checkScanf = scanf("%c", &string[i]);
+			int checkScanf = scanf("%s", string);
+			while (checkScanf != 1) {
+				while (getchar() != '\n') {
 				}
+
+				printf("Ошибка...\n");
+				checkScanf = scanf("%s", string);
 			}
 			if (!addToBinaryTree(tree, key, string)) {
 				return false;
