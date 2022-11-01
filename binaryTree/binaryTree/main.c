@@ -16,6 +16,20 @@ bool talkWithUser(void) {
 			printf("¬ведите размер строки\n");
 			int size = scanOne();
 			char* string = calloc(size, sizeof(char));
+			if (string == NULL) {
+				return false;
+			}
+			printf("¬ведите строку!\n");
+			for (int i = 0; i < size; ++i) {
+				int checkScanf = scanf("%c", &string[i]);
+				while (checkScanf != 1) {
+					while (getchar() != '\n') {
+					}
+
+					printf("ќшибка...\n");
+					checkScanf = scanf("%c", &string[i]);
+				}
+			}
 			if (!addToBinaryTree(tree, key, string)) {
 				return false;
 			}
