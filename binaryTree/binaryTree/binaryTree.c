@@ -74,9 +74,9 @@ bool isThereAKeyInTheTree(Node* tree, int key) {
     return false;
 }
 
-bool deleteNodeInTreeByKey(Node* tree, int key) {
+Node* deleteNodeInTreeByKey(Node* tree, int key) {
     if (tree == NULL) {
-        return true;
+        return tree;
     }
     Node* walker = tree;
     Node* prevWalker = NULL;
@@ -93,7 +93,7 @@ bool deleteNodeInTreeByKey(Node* tree, int key) {
                         newRight->left = newLeft;
                         free(walker->value.value);
                         free(walker);
-                        return true;
+                        return tree;
                     }
                     while (newWalker->left != NULL) {
                         newWalker = newWalker->left;
@@ -102,15 +102,20 @@ bool deleteNodeInTreeByKey(Node* tree, int key) {
                     newWalker->left = newLeft;
                     free(walker->value.value);
                     free(walker);
-                    return true;
+                    return tree;
                 }
                 else {
+                    if (tree->left == NULL && tree->right == NULL) {
+                        free(tree);
+                        tree = NULL;
+                        return tree;
+                    }
                     tree->right = walker->left;
                     free(walker->value.value);
                     free(walker);
-                    return true;
+                    return tree;
                 }
-                return true;
+                return tree;
             }
             if (prevWalker->value.key < key) {
                 if (walker->right != NULL) {
@@ -122,7 +127,7 @@ bool deleteNodeInTreeByKey(Node* tree, int key) {
                         newRight->left = newLeft;
                         free(walker->value.value);
                         free(walker);
-                        return true;
+                        return tree;
                     }
                     while (newWalker->left != NULL) {
                         newWalker = newWalker->left;
@@ -131,12 +136,12 @@ bool deleteNodeInTreeByKey(Node* tree, int key) {
                     newWalker->left = newLeft;
                     free(walker->value.value);
                     free(walker);
-                    return true;
+                    return tree;
                 } else {
                     prevWalker->right = walker->left;
                     free(walker->value.value);
                     free(walker);
-                    return true;
+                    return tree;
                 }
             } else {
                 if (walker->right != NULL) {
@@ -148,7 +153,7 @@ bool deleteNodeInTreeByKey(Node* tree, int key) {
                         newRight->left = newLeft;
                         free(walker->value.value);
                         free(walker);
-                        return true;
+                        return tree;
                     }
                     while (newWalker->left != NULL) {
                         newWalker = newWalker->left;
@@ -157,16 +162,16 @@ bool deleteNodeInTreeByKey(Node* tree, int key) {
                     newWalker->left = newLeft;
                     free(walker->value.value);
                     free(walker);
-                    return true;
+                    return tree;
                 }
                 else {
                     prevWalker->left = walker->left;
                     free(walker->value.value);
                     free(walker);
-                    return true;
+                    return tree;
                 }
             }
-            return true;
+            return tree;
         }
         else if (walker->value.key > key) {
             prevWalker = walker;
@@ -177,7 +182,7 @@ bool deleteNodeInTreeByKey(Node* tree, int key) {
             walker = walker->right;
         }
     }
-    return true;
+    return tree;
 }
 
 char* returnValueByKey(Node* tree, int key) {

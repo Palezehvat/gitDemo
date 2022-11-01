@@ -61,10 +61,7 @@ bool talkWithUser(void) {
 		} else if (command == 4) {
 			printf("Введите ключ\n");
 			int key = scanOne();
-			if (!deleteNodeInTreeByKey(tree, key)) {
-				clearBinaryTree(tree);
-				return false;
-			}
+			tree = deleteNodeInTreeByKey(tree, key);
 			printf("Введите следующую команду!\n");
 		} else {
 			printf("Вы ввели несуществующую команду. Попробуйте ещё раз!\n");
@@ -74,8 +71,45 @@ bool talkWithUser(void) {
 	clearBinaryTree(tree);
 }
 
+bool test(void) {
+	Node* tree = NULL;
+	char* buffer = calloc(4, sizeof(char));
+	if (buffer == NULL) {
+		return false;
+	}
+	for (int i = 0; i < 3; ++i) {
+		if (i == 0) {
+			buffer[i] = 'e';
+		} else if (i == 1) {
+			buffer[i] = 'n';
+		} else if (i == 2) {
+			buffer[i] = 'd';
+		}
+	}
+	tree = addToBinaryTree(tree, 100, buffer);
+	if (strcmp(returnValueByKey(tree, 100), buffer) != 0) {
+		return false;
+	}
+	if (!isThereAKeyInTheTree(tree, 100)) {
+		return false;
+	}
+	
+	tree = deleteNodeInTreeByKey(tree, 100);
+
+	if (isThereAKeyInTheTree(tree, 100)) {
+		return false;
+	}
+	return true;
+}
+
 int main() {
 	setlocale(LC_ALL, "RUS");
+	if (test()) {
+		printf("Тесты прошли успешно\n");
+	} else {
+		printf("Ошибка...");
+	}
+
 	if (!talkWithUser()) {
 		printf("Ошибка!\n");
 		return -1;

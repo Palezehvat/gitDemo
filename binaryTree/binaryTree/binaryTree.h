@@ -10,6 +10,6 @@ char* returnValueByKey(Node* tree, int key);
 
 void clearBinaryTree(Node* tree);
 
-bool deleteNodeInTreeByKey(Node* tree, int key);
+Node* deleteNodeInTreeByKey(Node* tree, int key);
 
 bool isThereAKeyInTheTree(Node* tree, int key);
