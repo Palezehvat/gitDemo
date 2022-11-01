@@ -84,7 +84,32 @@ bool deleteNodeInTreeByKey(Node* tree, int key) {
     while (walker != NULL) {
         if (walker->value.key == key) {
             if (prevWalker == NULL) {
-
+                if (walker->right != NULL) {
+                    Node* newRight = walker->right;
+                    Node* newLeft = walker->left;
+                    Node* newWalker = newRight->left;
+                    if (newWalker == NULL) {
+                        tree->right = newRight;
+                        newRight->left = newLeft;
+                        free(walker->value.value);
+                        free(walker);
+                        return true;
+                    }
+                    while (newWalker->left != NULL) {
+                        newWalker = newWalker->left;
+                    }
+                    tree = newRight;
+                    newWalker->left = newLeft;
+                    free(walker->value.value);
+                    free(walker);
+                    return true;
+                }
+                else {
+                    tree->right = walker->left;
+                    free(walker->value.value);
+                    free(walker);
+                    return true;
+                }
                 return true;
             }
             if (prevWalker->value.key < key) {

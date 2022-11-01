@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <locale.h>
 #include "binaryTree.h"
+#include <string.h>
 
 int scanOne();
 
@@ -13,21 +14,26 @@ bool talkWithUser(void) {
 		if (command == 1) {
 			printf("Введите ключ\n");
 			int key = scanOne();
-			printf("Введите размер строки\n");
-			int size = scanOne();
+			printf("Введите размер строки. Он не должен превышать 199 символов\n");
+			int size = scanOne() + 1;
 			char* string = calloc(size, sizeof(char));
+			char buffer[200] = { '\0' };
 			if (string == NULL) {
 				return false;
 			}
-			printf("Введите строку!\n");
-			int checkScanf = scanf("%s", string);
-			while (checkScanf != 1) {
-				while (getchar() != '\n') {
-				}
+			while (strlen(buffer) != size - 1) {
+				strcpy(buffer, "");
+				printf("Введите строку!\n");
+				int checkScanf = scanf("%s", buffer);
+				while (checkScanf != 1) {
+					while (getchar() != '\n') {
+					}
 
-				printf("Ошибка...\n");
-				checkScanf = scanf("%s", string);
+					printf("Ошибка...\n");
+					checkScanf = scanf("%s", buffer);
+				}
 			}
+			strcpy(string, buffer);
 			Node* check = addToBinaryTree(tree, key, string);
 			if (check == NULL) {
 				clearBinaryTree(tree);
