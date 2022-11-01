@@ -4,7 +4,7 @@
 
 typedef struct Node Node;
 
-bool addToBinaryTree(Node* tree, int key, char* value);
+Node* addToBinaryTree(Node* tree, int key, char* value);
 
 char* returnValueByKey(Node* tree, int key);
 

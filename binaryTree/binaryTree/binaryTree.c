@@ -15,7 +15,7 @@ typedef struct Node {
     struct Node* right;
 } Node;
 
-bool addToBinaryTree(Node* tree, int key, char* value) {
+Node* addToBinaryTree(Node* tree, int key, char* value) {
     if (tree == NULL) {
         Node* temp = calloc(1, sizeof(Node));
         if (temp == NULL) {
@@ -24,7 +24,7 @@ bool addToBinaryTree(Node* tree, int key, char* value) {
         temp->value.key = key;
         temp->value.value = value;
         tree = temp;
-        return true;
+        return tree;
     }
     Node* walker = tree;
     Node* prevWalker = NULL;
@@ -43,7 +43,7 @@ bool addToBinaryTree(Node* tree, int key, char* value) {
     }
     Node* temp = calloc(1, sizeof(Node));
     if (temp == NULL) {
-        return false;
+        return NULL;
     }
     temp->value.key = key;
     temp->value.value = value;
@@ -52,7 +52,7 @@ bool addToBinaryTree(Node* tree, int key, char* value) {
     } else {
         prevWalker->left = temp;
     }
-    return true;
+    return tree;
 }
 
 bool isThereAKeyInTheTree(Node* tree, int key) {

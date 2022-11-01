@@ -28,9 +28,12 @@ bool talkWithUser(void) {
 				printf("ќшибка...\n");
 				checkScanf = scanf("%s", string);
 			}
-			if (!addToBinaryTree(tree, key, string)) {
+			Node* check = addToBinaryTree(tree, key, string);
+			if (check == NULL) {
+				clearBinaryTree(tree);
 				return false;
 			}
+			tree = check;
 			printf("¬ведите следующую команду!\n");
 		} else if (command == 2) {
 			printf("¬ведите ключ\n");
@@ -53,6 +56,7 @@ bool talkWithUser(void) {
 			printf("¬ведите ключ\n");
 			int key = scanOne();
 			if (!deleteNodeInTreeByKey(tree, key)) {
+				clearBinaryTree(tree);
 				return false;
 			}
 			printf("¬ведите следующую команду!\n");
