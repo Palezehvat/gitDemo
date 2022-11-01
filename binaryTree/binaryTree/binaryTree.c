@@ -173,10 +173,13 @@ char* returnValueByKey(Node* tree, int key) {
 }
 
 void clearBinaryTree(Node* tree) {
+    if (tree == NULL) {
+        return;
+    }
     if (tree->left == NULL && tree->right == NULL) {
         free(tree->value.value);
         free(tree);
-        return ;
+        return;
     }
     clearBinaryTree(tree->left);
     clearBinaryTree(tree->right);
