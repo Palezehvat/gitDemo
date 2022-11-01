@@ -95,6 +95,7 @@ bool deleteNodeInTreeByKey(Node* tree, int key) {
                     if (newWalker == NULL) {
                         prevWalker->right = newRight;
                         newRight->left = newLeft;
+                        free(walker->value.value);
                         free(walker);
                         return true;
                     }
@@ -103,10 +104,12 @@ bool deleteNodeInTreeByKey(Node* tree, int key) {
                     }
                     prevWalker->right = newRight;
                     newWalker->left = newLeft;
+                    free(walker->value.value);
                     free(walker);
                     return true;
                 } else {
                     prevWalker->right = walker->left;
+                    free(walker->value.value);
                     free(walker);
                     return true;
                 }
@@ -118,6 +121,7 @@ bool deleteNodeInTreeByKey(Node* tree, int key) {
                     if (newWalker == NULL) {
                         prevWalker->left = newRight;
                         newRight->left = newLeft;
+                        free(walker->value.value);
                         free(walker);
                         return true;
                     }
@@ -126,11 +130,13 @@ bool deleteNodeInTreeByKey(Node* tree, int key) {
                     }
                     prevWalker->left = newRight;
                     newWalker->left = newLeft;
+                    free(walker->value.value);
                     free(walker);
                     return true;
                 }
                 else {
                     prevWalker->left = walker->left;
+                    free(walker->value.value);
                     free(walker);
                     return true;
                 }
@@ -168,6 +174,7 @@ char* returnValueByKey(Node* tree, int key) {
 
 void clearBinaryTree(Node* tree) {
     if (tree->left == NULL && tree->right == NULL) {
+        free(tree->value.value);
         free(tree);
         return ;
     }
