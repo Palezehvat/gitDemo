@@ -4,35 +4,43 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-typedef struct value {
+typedef struct Value {
     int key;
     char* value;
-} value;
+} Value;
 
 typedef struct Node {
-    value value;
+    Value value;
     struct Node* left;
     struct Node* right;
 } Node;
 
-Node* addToBinaryTree(Node* tree, int key, char* value) {
+Node* createNode(const int key, const char* value) {
+    Node* temp = calloc(1, sizeof(Node));
+    if (temp == NULL) {
+        return NULL;
+    }
+    temp->value.key = key;
+    temp->value.value = value;
+}
+
+Node* addToBinaryTree(Node* tree, const int key, const char* value) {
+
     if (tree == NULL) {
-        Node* temp = calloc(1, sizeof(Node));
-        if (temp == NULL) {
-            return false;
+        tree = createNode(key, value);
+        if (tree == NULL) {
+            return NULL;
         }
-        temp->value.key = key;
-        temp->value.value = value;
-        tree = temp;
         return tree;
     }
+
     Node* walker = tree;
     Node* prevWalker = NULL;
 
     while (walker != NULL) {
         if (walker->value.key == key) {
             walker->value.value = value;
-            return true;
+            return tree;
         } else if (walker->value.key > key) {
             prevWalker = walker;
             walker = walker->left;
@@ -41,25 +49,22 @@ Node* addToBinaryTree(Node* tree, int key, char* value) {
             walker = walker->right;
         }
     }
-    Node* temp = calloc(1, sizeof(Node));
-    if (temp == NULL) {
-        return NULL;
-    }
-    temp->value.key = key;
-    temp->value.value = value;
+
     if (key > prevWalker->value.key) {
-        prevWalker->right = temp;
+        prevWalker->right = createNode(key, value);
     } else {
-        prevWalker->left = temp;
+        prevWalker->left = createNode(key, value);
     }
     return tree;
 }
 
-bool isThereAKeyInTheTree(Node* tree, int key) {
+bool isKeyInTree(Node* tree, const int key) {
+    Node* walker = tree;
+    
     if (tree == NULL) {
         return false;
     }
-    Node* walker = tree;
+
     while (walker != NULL) {
         if (walker->value.key == key) {
             return true;
@@ -74,7 +79,23 @@ bool isThereAKeyInTheTree(Node* tree, int key) {
     return false;
 }
 
-Node* deleteNodeInTreeByKey(Node* tree, int key) {
+void clearOneElement(Node* tree) {
+    if (tree != NULL) {
+        free(tree->value.value);
+        free(tree);
+    }
+}
+
+void toChangePointerByKey(Node* treeFirst, Node* treeSecond, int keySecond) {
+    if (treeFirst->value.key < keySecond) {
+        treeFirst->right = treeSecond;
+    }
+    else {
+        treeFirst->left = treeSecond;
+    }
+}
+
+Node* deleteNodeInTreeByKey(Node* tree, const int key) {
     if (tree == NULL) {
         return tree;
     }
@@ -85,23 +106,19 @@ Node* deleteNodeInTreeByKey(Node* tree, int key) {
         if (walker->value.key == key) {
             if (prevWalker == NULL) {
                 if (walker->right != NULL) {
-                    Node* newRight = walker->right;
-                    Node* newLeft = walker->left;
-                    Node* newWalker = newRight->left;
+                    Node* newWalker = walker->right->left;
                     if (newWalker == NULL) {
-                        tree->right = newRight;
-                        newRight->left = newLeft;
-                        free(walker->value.value);
-                        free(walker);
+                        tree = walker->right;
+                        walker->right->left = walker->left;
+                        clearOneElement(walker);
                         return tree;
                     }
                     while (newWalker->left != NULL) {
                         newWalker = newWalker->left;
                     }
-                    tree = newRight;
-                    newWalker->left = newLeft;
-                    free(walker->value.value);
-                    free(walker);
+                    tree = walker->right;
+                    newWalker->left = walker->left;
+                    clearOneElement(walker);
                     return tree;
                 }
                 else {
@@ -110,74 +127,35 @@ Node* deleteNodeInTreeByKey(Node* tree, int key) {
                         tree = NULL;
                         return tree;
                     }
-                    tree->right = walker->left;
-                    free(walker->value.value);
-                    free(walker);
+                    tree = walker->left;
+                    clearOneElement(walker);
                     return tree;
                 }
                 return tree;
             }
-            if (prevWalker->value.key < key) {
-                if (walker->right != NULL) {
-                    Node* newRight = walker->right;
-                    Node* newLeft = walker->left;
-                    Node* newWalker = newRight->left;
-                    if (newWalker == NULL) {
-                        prevWalker->right = newRight;
-                        newRight->left = newLeft;
-                        free(walker->value.value);
-                        free(walker);
-                        return tree;
-                    }
-                    while (newWalker->left != NULL) {
-                        newWalker = newWalker->left;
-                    }
-                    prevWalker->right = newRight;
-                    newWalker->left = newLeft;
-                    free(walker->value.value);
-                    free(walker);
-                    return tree;
-                } else {
-                    prevWalker->right = walker->left;
-                    free(walker->value.value);
-                    free(walker);
+            if (walker->right != NULL) {
+                Node* newWalker = walker->right->left;
+                toChangePointerByKey(prevWalker, walker->right, key);
+                if (newWalker == NULL) {
+                    walker->right->left = walker->left;
+                    clearOneElement(walker);
                     return tree;
                 }
+                while (newWalker->left != NULL) {
+                    newWalker = newWalker->left;
+                }
+                newWalker->left = walker->left;
+                clearOneElement(walker);
+                return tree;
             } else {
-                if (walker->right != NULL) {
-                    Node* newRight = walker->right;
-                    Node* newLeft = walker->left;
-                    Node* newWalker = newRight->left;
-                    if (newWalker == NULL) {
-                        prevWalker->left = newRight;
-                        newRight->left = newLeft;
-                        free(walker->value.value);
-                        free(walker);
-                        return tree;
-                    }
-                    while (newWalker->left != NULL) {
-                        newWalker = newWalker->left;
-                    }
-                    prevWalker->left = newRight;
-                    newWalker->left = newLeft;
-                    free(walker->value.value);
-                    free(walker);
-                    return tree;
-                }
-                else {
-                    prevWalker->left = walker->left;
-                    free(walker->value.value);
-                    free(walker);
-                    return tree;
-                }
+                toChangePointerByKey(prevWalker, walker->left, key);
+                clearOneElement(walker);
+                return tree;
             }
-            return tree;
-        }
-        else if (walker->value.key > key) {
+        } else if (walker->value.key > key) {
             prevWalker = walker;
             walker = walker->left;
-        }
-        else {
+        } else {
             prevWalker = walker;
             walker = walker->right;
         }
@@ -185,7 +163,7 @@ Node* deleteNodeInTreeByKey(Node* tree, int key) {
     return tree;
 }
 
-char* returnValueByKey(Node* tree, int key) {
+char* returnValueByKey(Node* tree, const int key) {
     if (tree == NULL) {
         return NULL;
     }
@@ -203,14 +181,9 @@ char* returnValueByKey(Node* tree, int key) {
 }
 
 void clearBinaryTree(Node* tree) {
-    if (tree == NULL) {
-        return;
-    }
-    if (tree->left == NULL && tree->right == NULL) {
-        free(tree->value.value);
+    if (tree != NULL) {
+        clearBinaryTree(tree->left);
+        clearBinaryTree(tree->right);
         free(tree);
-        return;
     }
-    clearBinaryTree(tree->left);
-    clearBinaryTree(tree->right);
 }

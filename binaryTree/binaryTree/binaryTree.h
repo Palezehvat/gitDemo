@@ -1,15 +1,20 @@
-#pragma once
+#ifndef BINARY_TREE_H 
+#define BINARY_TREE_H
+
 #include <stdbool.h>
-#include <stdlib.h>
 
 typedef struct Node Node;
 
-Node* addToBinaryTree(Node* tree, int key, char* value);
+Node* addToBinaryTree(Node* tree, const int key, const char* value);
 
-char* returnValueByKey(Node* tree, int key);
+char* returnValueByKey(Node* tree, const int key);
 
 void clearBinaryTree(Node* tree);
 
-Node* deleteNodeInTreeByKey(Node* tree, int key);
+Node* deleteNodeInTreeByKey(Node* tree, const int key);
 
-bool isThereAKeyInTheTree(Node* tree, int key);
+Node* createNode(const int key, const char* value);
+
+bool isKeyInTree(Node* tree, const int key);
+
+#endif
