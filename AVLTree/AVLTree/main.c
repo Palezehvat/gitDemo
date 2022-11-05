@@ -1,0 +1,85 @@
+#include "avlTree.h"
+#include <stdlib.h>
+#include <stdio.h>
+#include <locale.h>
+#include <stdbool.h>
+
+int scanOne();
+
+bool talkWithUser(void) {
+	printf("У вас есть следующие команды:\n0 - Выйти из интерактивного меню\n1 - Добавить значение по заданному ключу в словарь. Если такой ключ уже есть, значение заменяется на новое.\n2 - Получить значение по заданному ключу из словаря.Если такого ключа нет, возвращается NULL.\n3 - Проверить наличие заданного ключа.\n4- Удалить заданный ключ и связанное с ним значение из словаря.Если такого ключа нет, функция ничего не делает.");
+	int command = scanOne();
+
+	while (command > 4 || command < 0) {
+		printf("Вы ввели несуществующую команду. Попробуйте ещё раз!\n");
+		command = scanOne();
+	}
+
+	while (command != 0) {
+
+		switch (command) {
+			case 1:
+
+
+				break;
+			case 2:
+
+
+
+				break;
+
+
+
+			case 3:
+
+
+
+				break;
+			case 4:
+
+
+				break;
+		}
+
+
+		command = scanOne();
+
+		while (command > 4 || command < 0) {
+			printf("Вы ввели несуществующую команду. Попробуйте ещё раз!\n");
+			command = scanOne();
+		}
+	}
+}
+
+bool test() {
+	return true;
+}
+
+int main() {
+	setlocale(LC_ALL, "RUS");
+	if (test()) {
+		printf("Тесты прошли успешно!\n");
+	} else {
+		printf("Ошибка...\n");
+		return -1;
+	}
+	if (!talkWithUser()) {
+		printf("Ошибка...\n");
+		return -1;
+	}
+}
+
+int scanOne() {
+	int number = 0;
+	int checkScanf = scanf("%d", &number);
+
+	while (checkScanf != 1) {
+		while (getchar() != '\n') {
+		}
+
+		printf("Ошибка...\n");
+		checkScanf = scanf("%d", &number);
+	}
+
+	return number;
+}
