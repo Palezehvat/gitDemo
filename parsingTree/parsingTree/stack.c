@@ -64,10 +64,21 @@ bool isEmpty(Stack* stack) {
     return stack->head == NULL;
 }
 
+void customDelete(Stack* stack) {
+    while (!isEmpty(stack)) {
+        int errorCode = 0;
+        Node* element = pop(stack, &errorCode);
+        free(element);
+    }
+    free(stack);
+    stack = NULL;
+}
+
 void deleteStack(Stack* stack) {
     while (!isEmpty(stack)) {
         int errorCode = 0;
         pop(stack, &errorCode);
     }
+    free(stack);
     stack = NULL;
 }

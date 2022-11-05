@@ -79,17 +79,29 @@ bool connectingFunction(char fileName[]) {
 	if (!readFromFileToTree(fileName, tree)) {
 		return false;
 	}
+	printTree(tree);
 	int errorCode = 0;
 	int number = postorderCount(tree, &errorCode);
 	if (errorCode != 0) {
 		return -1;
 	}
 	printf("%d\n", number);
+	clearTree(tree);
 	return true;
 }
 
 bool test() {
-	return true;
+	Tree* tree = createTree();
+	if (!readFromFileToTree("test.txt", tree)) {
+		return false;
+	}
+	int errorCode = 0;
+	int number = postorderCount(tree, &errorCode);
+	if (errorCode != 0) {
+		return -1;
+	}
+	clearTree(tree);
+	return number == -16;
 }
 
 int main() {

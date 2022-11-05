@@ -24,4 +24,7 @@ bool isEmpty(Stack* stack);
 
 //Очистка стека
 void deleteStack(Stack* stack);
+
+//Очистка стека + произвольного элемента внутри него
+void customDelete(Stack* stack);
 #endif

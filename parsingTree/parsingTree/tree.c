@@ -1,6 +1,7 @@
 #include "tree.h"
 #include "stack.h"
 #include <stdlib.h>
+#include <stdio.h>
 #include <stdbool.h>
 
 typedef struct Value {
@@ -111,10 +112,10 @@ void addToTreeNumber(Tree* tree, int number, int* errorCode) {
 	newRoot->value.number = number;
 }
 
-void postorderHelp(Node* root, Stack* stack) {
+void postorderHelp(Node* root, Stack* stack, Stack* stackToClear) {
 	if (root != NULL) {
-		postorderHelp(root->left, stack);
-		postorderHelp(root->right, stack);
+		postorderHelp(root->left, stack, stackToClear);
+		postorderHelp(root->right, stack, stackToClear);
 		if (root->value.symbol != 0) {
 			int errorCode = 0;
 			Node* element = pop(stack, &errorCode);
@@ -124,28 +125,80 @@ void postorderHelp(Node* root, Stack* stack) {
 			int firstNumber = element->value.number;
 			int newNumber = 0;
 			if (root->value.symbol == '+') {
-				newNumber = secondNumber + firstNumber;
+				newNumber = firstNumber + secondNumber;
 			} else if (root->value.symbol == '*') {
-				newNumber = secondNumber * firstNumber;
+				newNumber = firstNumber * secondNumber;
 			} else if (root->value.symbol == '-') {
-				newNumber = secondNumber - firstNumber;
+				newNumber = firstNumber - secondNumber;
 			} else {
-				newNumber = secondNumber / firstNumber;
+				newNumber = firstNumber / secondNumber;
 			}
 			newElement->value.number = newNumber;
 			push(stack, newElement);
+			push(stackToClear, newElement);
 		} else {
 			push(stack, root);
-		}///¬озможна утечка пам€ти, требуетс€ проверка
+		}
 	}
+}
+
+void infix(Node* root, int isNeedStample) {
+	if (root != NULL) {
+		if (root->value.symbol != 0) {
+			printf("(%c ", root->value.symbol);
+			++isNeedStample;
+		} else {
+			if (isNeedStample == 0) {
+				printf("%d ", root->value.number);
+			} else {
+				printf("%d", root->value.number);
+				while (isNeedStample != 0) {
+					printf(")");
+					--isNeedStample;
+				}
+				printf(" ");
+			}
+		}
+		infix(root->left, 0);
+		infix(root->right, isNeedStample);
+	}
+}
+
+void printTree(Tree* tree) {
+	if (tree == NULL) {
+		return;
+	}
+	infix(tree->root, 0);
+	printf("\n");
 }
 
 int postorderCount(Tree* tree, int* errorCode) {
 	Stack* stack = createStack();
-	postorderHelp(tree->root, stack);
+	Stack* stackToClear = createStack();
+	postorderHelp(tree->root, stack, stackToClear);
 	Node* newElement = pop(stack, errorCode);
 	if (*errorCode != 0 || newElement == NULL) {
 		return 0;
 	}
-	return newElement->value.number;
+	int number = newElement->value.number;
+	customDelete(stackToClear);
+	return number;
+}
+
+void postorderDelete(Node* root) {
+	if (root != NULL) {
+		postorderDelete(root->left);
+		postorderDelete(root->right);
+		free(root);
+		root = NULL;
+	}
+}
+
+void clearTree(Tree* tree) {
+	if (tree == NULL) {
+		return;
+	}
+	postorderDelete(tree->root);
+	free(tree);
+	tree = NULL;
 }

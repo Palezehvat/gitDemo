@@ -14,4 +14,10 @@ void addToTreeNumber(Tree* tree, int number, int* errorCode);
 
 // Считает значение выражения, находящегося в дереве
 int postorderCount(Tree* tree, int* errorCode);
+
+//Печатает дерево
+void printTree(Tree* tree);
+
+//Удаляет дерево
+void clearTree(Tree* tree);
 #endif
