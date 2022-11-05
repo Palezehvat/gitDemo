@@ -12,4 +12,6 @@ void addToTreeSymbol(Tree* tree, char symbol, int* errorCode);
 //ƒобавление в дерево элемента, состо€щего из непустого int'а и пустого char'а
 void addToTreeNumber(Tree* tree, int number, int* errorCode);
 
+// —читает значение выражени€, наход€щегос€ в дереве
+int postorderCount(Tree* tree, int* errorCode);
 #endif

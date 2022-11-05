@@ -42,16 +42,17 @@ Node* nonRecursivePreorder(Node* root, int* errorCode) {
 		else {
 			if (isEmpty(stack)) {
 				free(stack);
-				return;
+				return NULL;
 			}
 			current = pop(stack, errorCode);
 			if (*errorCode != 0) {
-				return;
+				return NULL;
 			}
 			current = current->right;
 		}
 	}
 	deleteStack(stack);
+	return NULL;
 }
 
 void addToTreeSymbol(Tree* tree, char symbol, int* errorCode) {
@@ -76,6 +77,7 @@ void addToTreeSymbol(Tree* tree, char symbol, int* errorCode) {
 			*errorCode = -1;
 			return;
 		}
+		return;
 	}
 	Node* newRoot = nonRecursivePreorder(tree->root, errorCode);
 	if (*errorCode != 0 || newRoot == NULL) {
@@ -107,4 +109,43 @@ void addToTreeNumber(Tree* tree, int number, int* errorCode) {
 		return;
 	}
 	newRoot->value.number = number;
+}
+
+void postorderHelp(Node* root, Stack* stack) {
+	if (root != NULL) {
+		postorderHelp(root->left, stack);
+		postorderHelp(root->right, stack);
+		if (root->value.symbol != 0) {
+			int errorCode = 0;
+			Node* element = pop(stack, &errorCode);
+			int secondNumber = element->value.number;
+			element = pop(stack, &errorCode);
+			Node* newElement = createNode();
+			int firstNumber = element->value.number;
+			int newNumber = 0;
+			if (root->value.symbol == '+') {
+				newNumber = secondNumber + firstNumber;
+			} else if (root->value.symbol == '*') {
+				newNumber = secondNumber * firstNumber;
+			} else if (root->value.symbol == '-') {
+				newNumber = secondNumber - firstNumber;
+			} else {
+				newNumber = secondNumber / firstNumber;
+			}
+			newElement->value.number = newNumber;
+			push(stack, newElement);
+		} else {
+			push(stack, root);
+		}///¬озможна утечка пам€ти, требуетс€ проверка
+	}
+}
+
+int postorderCount(Tree* tree, int* errorCode) {
+	Stack* stack = createStack();
+	postorderHelp(tree->root, stack);
+	Node* newElement = pop(stack, errorCode);
+	if (*errorCode != 0 || newElement == NULL) {
+		return 0;
+	}
+	return newElement->value.number;
 }

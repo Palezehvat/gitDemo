@@ -79,6 +79,12 @@ bool connectingFunction(char fileName[]) {
 	if (!readFromFileToTree(fileName, tree)) {
 		return false;
 	}
+	int errorCode = 0;
+	int number = postorderCount(tree, &errorCode);
+	if (errorCode != 0) {
+		return -1;
+	}
+	printf("%d\n", number);
 	return true;
 }
 
