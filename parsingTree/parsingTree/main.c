@@ -18,14 +18,6 @@ bool readFromFileToTree(char fileName[], Tree* tree) {
 	char letter = 0;
 
 	while (!feof(file)) {
-		int symbol = getc(file);
-		if (symbol == '(' || symbol == ')') {
-			ungetc("", file);
-		}
-		else {
-			ungetc(symbol, file);
-		}
-
 		fscanf(file, "%c", &letter);
 		if (letter == '+' || letter == '*' || letter == '/') {
 			addToTreeSymbol(tree, letter, &errorCode);
@@ -101,7 +93,7 @@ bool test() {
 		return -1;
 	}
 	clearTree(tree);
-	return number == -16;
+	return number == -4;
 }
 
 int main() {
