@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <locale.h>
 #include <stdbool.h>
+#include <string.h>
 
 int scanOne();
 
@@ -15,32 +16,64 @@ bool talkWithUser(void) {
 		command = scanOne();
 	}
 
+	Tree* tree = createTree();
+	char* stringCopy = NULL;
+
 	while (command != 0) {
+		printf("Введите ключ\n");
+		int key = scanOne();
 
 		switch (command) {
 			case 1:
+				printf("Введите размер строки. Он не должен превышать 100 символов\n");
+				int size = scanOne();
+				while (size < 0 || size > 100) {
+					while (getchar() != '\n') {
+					}
+					printf("Ошибка...\n");
+					size = scanOne();
+				}
+				char buffer[101] = { '\0' };
+				int checkScanf = scanf("%s", buffer);
 
-
+				while (checkScanf != 1) {
+					while (getchar() != '\n') {
+					}
+					printf("Ошибка...\n");
+					checkScanf = scanf("%s", buffer);
+				}
+				size_t sizeBuffer = strlen(buffer);
+				char* string = calloc(sizeBuffer + 1, sizeof(char));
+				if (string == NULL) {
+					return false;
+				}
+				for (size_t i = 0; i < sizeBuffer; ++i) {
+					string[i] = buffer[i];
+				}
+				addToTree(tree, key, string);
 				break;
 			case 2:
-
-
-
+				stringCopy = NULL;
+				stringCopy = returnValueByKey(tree, key);
+				if (string != NULL) {
+					printf("%s\n", string);
+				}
+				printf("Введите следующую команду!\n");
 				break;
-
-
-
 			case 3:
-
-
-
+				if (isKeyInTree(tree, key)) {
+					printf("Да, такой ключ имеется!\n");
+				}
+				else {
+					printf("Нет, такого ключа нет!\n");
+				}
+				printf("Введите следующую команду!\n");
 				break;
 			case 4:
-
-
+				tree = deleteNodeInTreeByKey(tree, key);
+				printf("Введите следующую команду!\n");
 				break;
 		}
-
 
 		command = scanOne();
 
@@ -49,6 +82,8 @@ bool talkWithUser(void) {
 			command = scanOne();
 		}
 	}
+
+	clearTree(tree);
 }
 
 bool test() {
