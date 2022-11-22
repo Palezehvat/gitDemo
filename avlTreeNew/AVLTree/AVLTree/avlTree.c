@@ -172,8 +172,31 @@ bool isKeyInTree(Tree* tree, int key) {
 	return false;
 }
 
-Node* deleteNode(Node* root, int key, Tree* tree, Node* previousRoot) {
-
+Node* deleteNode(Node* root, int key, Tree* tree, Node* previousRoot, Node* theMostBigLeft, bool firstLeft) {
+	if (!firstLeft && theMostBigLeft->right == NULL) {
+		Node* tempLeft = root->left;
+		free(root->data.value);
+		root->data.value = theMostBigLeft->data.value;
+		root->data.key = theMostBigLeft->data.key;
+		if (theMostBigLeft->left != NULL) {
+			root->left = theMostBigLeft->left;
+			root->left->left = tempLeft;
+			root->left->data.balance = -1 + root->left->left->data.balance;
+		}
+		root->data.balance = root->right->data.balance - root->left->data.balance - 1;
+		free(theMostBigLeft);
+		return NULL;
+	} else {
+		if (firstLeft) {
+			root->left = deleteNode(root, key, tree, previousRoot, root->left, false);
+///			++theMostBigLeft->data.balance;
+		}
+		else {
+			theMostBigLeft->right = deleteNode(root, key, tree, previousRoot, theMostBigLeft->right, false);
+			--theMostBigLeft->data.balance;
+		}
+	}
+	return balance(theMostBigLeft);
 }
 
 Node* helpDeleteNodeInTreeByKey(Node* root, int key, Tree* tree, Node* previousRoot) {
@@ -181,35 +204,7 @@ Node* helpDeleteNodeInTreeByKey(Node* root, int key, Tree* tree, Node* previousR
 		return NULL;
 	}
 	if (root->data.key == key) {
-		if (previousRoot == NULL) {
-			if (root->right == NULL) {
-				Node* temp = root->left;
-				free(root->data.value);
-				free(root);
-				return temp;
-			}
-			else {
-				if (root->right->left == NULL) {
-					Node* temp = root->left;
-					free(root->data.value);
-					free(root);
-					root->left = temp;
-					root->data.balance = root->right - root->left;
-					return root;
-				}
-				else {
-					deleteNode(root, key, tree, previousRoot);
-				}
-			}
-		}
-		else {
-			if (previousRoot->data.key < key) {
-				previousRoot->right = deleteNode(root, key, tree, previousRoot);
-			}
-			else {
-				previousRoot->left = deleteNode(root, key, tree, previousRoot);
-			}
-		}
+		deleteNode(root, key, tree, previousRoot, NULL, true);
 	}
 	if (key < root->data.key) {
 		root->left = helpDeleteNodeInTreeByKey(root->left, key, tree, root);
