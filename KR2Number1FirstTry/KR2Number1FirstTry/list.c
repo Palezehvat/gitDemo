@@ -13,10 +13,6 @@ struct List {
     struct Node* tail;
 };
 
-bool isEmpty(List* list) {
-    return list->head == NULL;
-}
-
 int insert(List* list, int value) {
     if (list->head == NULL) {
         Node* temp = calloc(1, sizeof(Node));
