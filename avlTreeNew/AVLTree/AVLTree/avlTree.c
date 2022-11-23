@@ -10,12 +10,12 @@ typedef struct Value {
 
 typedef struct Node {
 	Value data;
-	Node* left;
-	Node* right;
+	struct Node* left;
+	struct Node* right;
 } Node;
 
 typedef struct Tree {
-	Node* root
+	struct Node* root;
 } Tree;
 
 Tree* createTree(void) {
@@ -74,14 +74,6 @@ Node* bigRotateRight(Node* a) {
 	c->left = b;
 	c->right = a;
 	return c;
-}
-
-Node* rotateLeft(Node* a) {
-	Node* b = a->right;
-	Node* c = b->left;
-	b->left = a;
-	a->right = c;
-	return b;
 }
 
 Node* rotateRight(Node* a) {
@@ -173,7 +165,7 @@ bool isKeyInTree(Tree* tree, int key) {
 }
 
 Node* deleteNode(Node* root, int key, Tree* tree, Node* previousRoot, Node* theMostBigLeft, bool firstLeft) {
-	if (!firstLeft && theMostBigLeft->right == NULL || root->left->right == NULL) {
+	if (!firstLeft && theMostBigLeft->right == NULL) {//!firstLeft && theMostBigLeft->right == NULL || root->left->right == NULL
 		Node* tempLeft = root->left;
 		free(root->data.value);
 		root->data.value = theMostBigLeft->data.value;
@@ -183,17 +175,24 @@ Node* deleteNode(Node* root, int key, Tree* tree, Node* previousRoot, Node* theM
 			root->left->left = tempLeft;
 			root->left->data.balance = -1 + root->left->left->data.balance;
 		}
-		root->data.balance = root->right->data.balance - root->left->data.balance - 1;
+		root->data.balance = root->right->data.balance - root->left->data.balance + 1;
 		free(theMostBigLeft);
 		return NULL;
 	} else {
 		if (firstLeft) {
 			root->left = deleteNode(root, key, tree, previousRoot, root->left, false);
-///			++theMostBigLeft->data.balance;
+///			++theMostBigLeft->data.balance;//проблемы с балансом + добавить тут условие return при получение нулевого узла
+			if (root->left == NULL) {
+				return root;
+			}
 		}
 		else {
 			theMostBigLeft->right = deleteNode(root, key, tree, previousRoot, theMostBigLeft->right, false);
 			--theMostBigLeft->data.balance;
+			if (theMostBigLeft->right == NULL) {
+				return theMostBigLeft;
+			}
+			// тоже скорей всего потребуется return при получении нулевого узла
 		}
 	}
 	return balance(theMostBigLeft);
@@ -217,7 +216,7 @@ Node* helpDeleteNodeInTreeByKey(Node* root, int key, Tree* tree, Node* previousR
 					previousRoot->left = temp;
 				}
 			}
-			return root;
+			return temp;
 		}
 		root = deleteNode(root, key, tree, previousRoot, NULL, true);
 		if (previousRoot == NULL) {
@@ -243,5 +242,7 @@ Node* helpDeleteNodeInTreeByKey(Node* root, int key, Tree* tree, Node* previousR
 }
 
 void deleteNodeInTreeByKey(Tree* tree, int key) {
-	tree->root = helpedDeleteNodeInTreeByKey(tree->root, key, tree, NULL);
+	if (isKeyInTree(tree, key)) {
+		tree->root = helpDeleteNodeInTreeByKey(tree->root, key, tree, NULL);
+	}
 }

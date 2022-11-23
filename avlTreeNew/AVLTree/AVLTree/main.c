@@ -8,7 +8,7 @@
 int scanOne();
 
 bool talkWithUser(void) {
-	printf("У вас есть следующие команды:\n0 - Выйти из интерактивного меню\n1 - Добавить значение по заданному ключу в словарь. Если такой ключ уже есть, значение заменяется на новое.\n2 - Получить значение по заданному ключу из словаря.Если такого ключа нет, возвращается NULL.\n3 - Проверить наличие заданного ключа.\n4- Удалить заданный ключ и связанное с ним значение из словаря.Если такого ключа нет, функция ничего не делает.");
+	printf("У вас есть следующие команды:\n0 - Выйти из интерактивного меню\n1 - Добавить значение по заданному ключу в словарь. Если такой ключ уже есть, значение заменяется на новое.\n2 - Получить значение по заданному ключу из словаря.Если такого ключа нет, возвращается NULL.\n3 - Проверить наличие заданного ключа.\n4- Удалить заданный ключ и связанное с ним значение из словаря.Если такого ключа нет, функция ничего не делает.\n");
 	int command = scanOne();
 
 	while (command > 4 || command < 0) {
@@ -25,7 +25,7 @@ bool talkWithUser(void) {
 
 		switch (command) {
 		case 1:
-			printf("Введите размер строки. Он не должен превышать 100 символов\n");
+			printf("Введите размер строки. Он не должен превышать 100 символов, а затем введите строку\n");
 			int size = scanOne();
 			while (size < 0 || size > 100) {
 				while (getchar() != '\n') {
@@ -58,7 +58,6 @@ bool talkWithUser(void) {
 			if (string != NULL) {
 				printf("%s\n", string);
 			}
-			printf("Введите следующую команду!\n");
 			break;
 		case 3:
 			if (isKeyInTree(tree, key)) {
@@ -67,14 +66,12 @@ bool talkWithUser(void) {
 			else {
 				printf("Нет, такого ключа нет!\n");
 			}
-			printf("Введите следующую команду!\n");
 			break;
 		case 4:
-			tree = deleteNodeInTreeByKey(tree, key);
-			printf("Введите следующую команду!\n");
+			deleteNodeInTreeByKey(tree, key);
 			break;
 		}
-
+		printf("Введите следующую команду!\n");
 		command = scanOne();
 
 		while (command > 4 || command < 0) {
@@ -87,7 +84,18 @@ bool talkWithUser(void) {
 }
 
 bool test() {
-	return true;
+	FILE* file = fopen("test.txt", "r");
+	if (file == NULL) {
+		return false;
+	}
+	char number = 0;
+	while (fscanf(file, "%c", &number) == 1) {
+		if (number >= '0' && number <= '9') {
+
+		} else {
+
+		}
+	}
 }
 
 int main() {
