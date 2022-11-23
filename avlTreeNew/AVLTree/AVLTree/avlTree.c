@@ -173,7 +173,7 @@ bool isKeyInTree(Tree* tree, int key) {
 }
 
 Node* deleteNode(Node* root, int key, Tree* tree, Node* previousRoot, Node* theMostBigLeft, bool firstLeft) {
-	if (!firstLeft && theMostBigLeft->right == NULL) {
+	if (!firstLeft && theMostBigLeft->right == NULL || root->left->right == NULL) {
 		Node* tempLeft = root->left;
 		free(root->data.value);
 		root->data.value = theMostBigLeft->data.value;
@@ -204,7 +204,32 @@ Node* helpDeleteNodeInTreeByKey(Node* root, int key, Tree* tree, Node* previousR
 		return NULL;
 	}
 	if (root->data.key == key) {
-		deleteNode(root, key, tree, previousRoot, NULL, true);
+		if (root->left == NULL) {
+			Node* temp = root->right;
+			free(root->data.value);
+			free(root);
+			if (previousRoot == NULL) {
+				tree->root = temp;
+			} else {
+				if (previousRoot->data.key < key) {
+					previousRoot->right = temp;
+				} else {
+					previousRoot->left = temp;
+				}
+			}
+			return root;
+		}
+		root = deleteNode(root, key, tree, previousRoot, NULL, true);
+		if (previousRoot == NULL) {
+			tree->root = root;
+		} else {
+			if (previousRoot->data.key < key) {
+				previousRoot->right = root;
+			}
+			else {
+				previousRoot->left = root;
+			}
+		}
 	}
 	if (key < root->data.key) {
 		root->left = helpDeleteNodeInTreeByKey(root->left, key, tree, root);
