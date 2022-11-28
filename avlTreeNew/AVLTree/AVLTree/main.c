@@ -88,14 +88,15 @@ bool test() {
 	if (file == NULL) {
 		return false;
 	}
-	char number = 0;
-	while (fscanf(file, "%c", &number) == 1) {
-		if (number >= '0' && number <= '9') {
-
-		} else {
-
-		}
+	int key = 0;
+	char string[2] = { 'a', '\0' };
+	Tree* tree = createTree();
+	while (fscanf(file, "%d", &key) == 1) {
+		addToTree(tree, key, string);
 	}
+
+	deleteNodeInTreeByKey(tree, 100);
+	fclose(file);
 }
 
 int main() {
