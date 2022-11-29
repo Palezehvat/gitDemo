@@ -1,4 +1,5 @@
 #include "avlTree.h"
+#include <conio.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -51,34 +52,34 @@ Node* rotateLeft(Node* a)
 {
 	Node* b = a->right;
 	Node* c = b->left;
+	if (a->left == NULL) {
+		if (b->left == NULL) {
+			a->data.balance = 0;
+		} else {
+			a->data.balance = b->left->data.balance + 1;
+		}
+	} else {
+		a->data.balance = b->left->data.balance - a->left->data.balance;
+	}
+	b->data.balance = b->right->data.balance - a->data.balance;
 	b->left = a;
 	a->right = c;
 	return b;
 }
-
-Node* bigRotateLeft(Node* a) {
-	Node* b = a->right;
-	Node* c = b->left;
-	a->right = c->left;
-	b->left = c->right;
-	c->left = a;
-	c->right = b;
-	return c;
-}
-
-Node* bigRotateRight(Node* a) {
-	Node* b = a->left;
-	Node* c = b->right;
-	a->left = c->right;
-	b->right = c->left;
-	c->left = b;
-	c->right = a;
-	return c;
-}
-
+ 
 Node* rotateRight(Node* a) {
 	Node* b = a->left;
 	Node* c = b->right;
+	if (a->right == NULL) {
+		if (b->right == NULL) {
+			a->data.balance = 0;
+		} else {
+			a->data.balance = b->right->data.balance + 1;
+		}
+	} else {
+		a->data.balance = b->right->data.balance - a->right->data.balance;
+	}
+	b->data.balance = b->left->data.balance - a->data.balance;
 	b->right = a;
 	a->left = c;
 	return b;
@@ -86,19 +87,19 @@ Node* rotateRight(Node* a) {
 
 Node* balance(Node* node) {
 	if (node->data.balance == 2) {
-		if (node->right->data.balance >= 0)
-			return rotateLeft(node);
-		return bigRotateLeft(node);
+		if (node->right->data.balance < 0)
+			node->right = rotateLeft(node->right);
+		return rotateLeft(node);
 	}
 	if (node->data.balance == -2) {
-		if (node->left->data.balance <= 0)
-			return rotateRight(node);
-		return bigRotateRight(node);
+		if (node->left->data.balance > 0)
+			node->left = rotateRight(node->left);
+		return rotateRight(node);
 	}
 	return node;
 }
 
-Node* helpedToInsert(Node* root, int key, char* string) {
+Node* helpedToInsert(Node* root, int key, char* string, const bool isKeyInTree) {
 	if (root == NULL) {
 		Node* newNode = createElementTree();
 		newNode->data.value = string;
@@ -110,18 +111,22 @@ Node* helpedToInsert(Node* root, int key, char* string) {
 		return root;
 	}
 	if (key < root->data.key) {
-		root->left = helpedToInsert(root->left, key, string);
-		--root->data.balance;
+		root->left = helpedToInsert(root->left, key, string, isKeyInTree);
+		if (!isKeyInTree) {
+			--root->data.balance;
+		}
 	}
 	else {
-		root->right = helpedToInsert(root->right, key, string);
-		++root->data.balance;
+		root->right = helpedToInsert(root->right, key, string, isKeyInTree);
+		if (!isKeyInTree) {
+			++root->data.balance;
+		}
 	}
 	return balance(root);
 }
 
 void addToTree(Tree* tree, int key, char* string) {
-	tree->root = helpedToInsert(tree->root, key, string);
+	tree->root = helpedToInsert(tree->root, key, string, isKeyInTree(tree, key));
 }
 
 char* returnValueByKey(Tree* tree, int key) {
@@ -164,11 +169,13 @@ bool isKeyInTree(Tree* tree, int key) {
 	return false;
 }
 
-Node* deleteNode(Node* root, int key, Tree* tree, Node* previousRoot, Node* theMostBigLeft, bool firstLeft) {
-	if (!firstLeft && theMostBigLeft->right == NULL) {//!firstLeft && theMostBigLeft->right == NULL || root->left->right == NULL
+Node* deleteNode(Node* root, int key, Tree* tree, Node* previousRoot, Node* theMostBigLeft, bool firstLeft, const bool ifUseFile) {
+	if (!firstLeft && theMostBigLeft->right == NULL) {
 		Node* tempLeft = root->left;
-		free(root->data.value);
-		root->data.value = theMostBigLeft->data.value;
+		if (!ifUseFile) {
+			free(root->data.value);
+			root->data.value = theMostBigLeft->data.value;
+		}
 		root->data.key = theMostBigLeft->data.key;
 		if (theMostBigLeft->left != NULL) {
 			root->left = theMostBigLeft->left;
@@ -180,32 +187,33 @@ Node* deleteNode(Node* root, int key, Tree* tree, Node* previousRoot, Node* theM
 		return NULL;
 	} else {
 		if (firstLeft) {
-			root->left = deleteNode(root, key, tree, previousRoot, root->left, false);
-///			++theMostBigLeft->data.balance;//проблемы с балансом + добавить тут условие return при получение нулевого узла
+			root->left = deleteNode(root, key, tree, previousRoot, root->left, false, ifUseFile);
 			if (root->left == NULL) {
-				return root;
+				return balance(root);
 			}
+			return balance(root);
 		}
 		else {
-			theMostBigLeft->right = deleteNode(root, key, tree, previousRoot, theMostBigLeft->right, false);
+			theMostBigLeft->right = deleteNode(root, key, tree, previousRoot, theMostBigLeft->right, false, ifUseFile);
 			--theMostBigLeft->data.balance;
 			if (theMostBigLeft->right == NULL) {
 				return theMostBigLeft;
 			}
-			// тоже скорей всего потребуется return при получении нулевого узла
 		}
 	}
 	return balance(theMostBigLeft);
 }
 
-Node* helpDeleteNodeInTreeByKey(Node* root, int key, Tree* tree, Node* previousRoot) {
+Node* helpDeleteNodeInTreeByKey(Node* root, int key, Tree* tree, Node* previousRoot, const bool ifUseFile) {
 	if (root == NULL) {
 		return NULL;
 	}
 	if (root->data.key == key) {
 		if (root->left == NULL) {
 			Node* temp = root->right;
-			free(root->data.value);
+			if (!ifUseFile) {
+				free(root->data.value);
+			}
 			free(root);
 			if (previousRoot == NULL) {
 				tree->root = temp;
@@ -218,7 +226,7 @@ Node* helpDeleteNodeInTreeByKey(Node* root, int key, Tree* tree, Node* previousR
 			}
 			return temp;
 		}
-		root = deleteNode(root, key, tree, previousRoot, NULL, true);
+		root = deleteNode(root, key, tree, previousRoot, NULL, true, ifUseFile);
 		if (previousRoot == NULL) {
 			tree->root = root;
 		} else {
@@ -229,20 +237,21 @@ Node* helpDeleteNodeInTreeByKey(Node* root, int key, Tree* tree, Node* previousR
 				previousRoot->left = root;
 			}
 		}
+		return root;
 	}
 	if (key < root->data.key) {
-		root->left = helpDeleteNodeInTreeByKey(root->left, key, tree, root);
+		root->left = helpDeleteNodeInTreeByKey(root->left, key, tree, root, ifUseFile);
 		++root->data.balance;
 	}
 	else {
-		root->right = helpDeleteNodeInTreeByKey(root->right, key, tree, root);
+		root->right = helpDeleteNodeInTreeByKey(root->right, key, tree, root, ifUseFile);
 		--root->data.balance;
 	}
 	return balance(root);
 }
 
-void deleteNodeInTreeByKey(Tree* tree, int key) {
+void deleteNodeInTreeByKey(Tree* tree, int key, const bool ifUseFile) {
 	if (isKeyInTree(tree, key)) {
-		tree->root = helpDeleteNodeInTreeByKey(tree->root, key, tree, NULL);
+		tree->root = helpDeleteNodeInTreeByKey(tree->root, key, tree, NULL, ifUseFile);
 	}
 }

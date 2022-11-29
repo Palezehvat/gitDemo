@@ -20,5 +20,5 @@ char* returnValueByKey(Tree* tree, int key);
 bool isKeyInTree(Tree* tree, int key);
 
 //Удаление элемента по ключу
-void deleteNodeInTreeByKey(Tree* tree, int key);
+void deleteNodeInTreeByKey(Tree* tree, int key, const bool ifUseFile);
 #endif
