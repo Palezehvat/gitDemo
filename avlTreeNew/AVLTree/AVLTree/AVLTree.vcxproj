@@ -141,9 +141,11 @@
   <ItemGroup>
     <ClCompile Include="avlTree.c" />
     <ClCompile Include="main.c" />
+    <ClCompile Include="test.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="avlTree.h" />
+    <ClInclude Include="test.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="test.txt" />

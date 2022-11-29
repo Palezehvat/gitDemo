@@ -1,4 +1,5 @@
 #include "avlTree.h"
+#include "test.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <locale.h>
@@ -83,41 +84,9 @@ bool talkWithUser(void) {
 	clearTree(tree);
 }
 
-bool test() {
-	FILE* file = fopen("test.txt", "r");
-	if (file == NULL) {
-		return false;
-	}
-	Tree* tree = createTree();
-	int key = 0;
-	char string[2] = {'\0'};
-	string[0] = 'a';
-	while (fscanf(file, "%d", &key) == 1) {
-		addToTree(tree, key, string);
-	}
-	fclose(file);
-
-	if (!isKeyInTree(tree, 100)) {
-		return false;
-	}
-	deleteNodeInTreeByKey(tree, 100, true);
-	if (isKeyInTree(tree, 100)) {
-		return false;
-	}
-	deleteNodeInTreeByKey(tree, 80, true);
-	char stringForCheck[2] = { '\0' };
-	stringForCheck[0] = 'a';
-	if (strcmp(returnValueByKey(tree, 120), stringForCheck) != 0) {
-		return false;
-	}
-	deleteNodeInTreeByKey(tree, 120, true);
-	clearTree(tree);
-	return true;
-}
-
 int main() {
 	setlocale(LC_ALL, "RUS");
-	if (test()) {
+	if (testForAvlTree()) {
 		printf("Тесты прошли успешно!\n");
 	}
 	else {
