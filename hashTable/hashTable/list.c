@@ -49,20 +49,18 @@ void insertToList(List* list, char value[], int *errorCode) {
     walker->next = newNode(errorCode, value);
 }
 
-Node* helpedClearList(Node* element) {
+void helpedClearList(Node* element) {
     if (element) {
-        element = helpedClearList(element->next);
+        helpedClearList(element->next);
         free(element);
-        return NULL;
     }
-    return NULL;
 }
 
 void clearList(List* list) {
     if (list == NULL) {
         return;
     }
-    list->head = helpedClearList(list->head);
+    helpedClearList(list->head);
     free(list);
     list = NULL;
     return;
@@ -73,8 +71,9 @@ void deleteNode(List* list, char value[]) {
         return;
     }
     if (strcmp(value, list->head->value) == 0) {
+        Node* temp = list->head->next;
         free(list->head);
-        list->head = NULL;
+        list->head = temp;
         return;
     }
     Node* walker = list->head;
