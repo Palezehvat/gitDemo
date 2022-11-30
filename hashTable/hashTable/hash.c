@@ -87,3 +87,24 @@ void printHashTable(HashTable* table) {
         }
     }
 }
+
+void clearHashTable(HashTable* table) {
+    for (int i = 0; i < table->hashSize; ++i) {
+        if (table->arrayHash[i]->list != NULL) {
+            clearList(table->arrayHash[i]->list);
+        }
+    }
+    free(table->arrayHash);
+    free(table);
+    table = NULL;
+}
+
+double fillFactor(HashTable* table) {
+    double busy = 0;
+    for (int i = 0; i < table->hashSize; ++i) {
+        if (table->arrayHash[i]->list != NULL) {
+            ++busy;
+        }
+    }
+    return busy == 0 ? -1 : busy / (double)table->hashSize;
+}

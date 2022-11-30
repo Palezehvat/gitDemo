@@ -13,7 +13,7 @@ int main() {
 		printf("ERROR\n");
 		checkScanf = scanf("%d", &size);
 	}
-	printf("Print file name with its extension\n");
+	printf("Print file name with its extension <100 symbols\n");
 	char fileName[100] = { '\0' };
 	checkScanf = scanf("%s", &fileName);
 	while (checkScanf != 1) {
@@ -43,4 +43,6 @@ int main() {
 	}
 	fclose(file);
 	printHashTable(table);
+	printf("%f", fillFactor(table));
+	clearHashTable(table);
 }

@@ -1,1 +1,1 @@
-abcde rarar avfe ops
+Calculate the frequency of occurrence of words in the text using a hash table. At the input of the text file, output to the console all the words that occur in this text with the number of times that each word occurs. A word is a sequence of characters separated by spaces, different word forms are considered different words. Implement the hash table in a separate module using the "List" module. Calculate and output also the hash table fill factor, the maximum and average length of the list in the table segment. The number of "free" attempts to surrender
