@@ -1,4 +1,5 @@
 #pragma once
+#include <stdbool.h>
 typedef struct HashTable HashTable;
 typedef struct ElementsHashTable ElementsHashTable;
 
@@ -19,3 +20,6 @@ void clearHashTable(HashTable* table);
 
 //find fill factor hash-table
 double fillFactor(HashTable* table);
+
+//Only for test
+bool ifAllInTableWithoutIdentical(HashTable* table, char** buffer, int sizeBuffer);

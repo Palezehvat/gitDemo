@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 
 typedef struct ElementsHashTable {
     struct List* list;
@@ -107,4 +108,24 @@ double fillFactor(HashTable* table) {
         }
     }
     return busy == 0 ? -1 : busy / (double)table->hashSize;
+}
+
+bool ifAllInTableWithoutIdentical(HashTable* table, char** buffer, int sizeBuffer) {
+    if (table == NULL) {
+        if (buffer == NULL) {
+            return true;
+        }
+        return false;
+    }
+    int howMuchInTable = 0;
+    for (int i = 0; i < table->hashSize; ++i) {
+        if (table->arrayHash[i]->list != NULL) {
+            for (int j = 0; j < sizeBuffer; ++j) {
+                if (findStringInList(table->arrayHash[i]->list, buffer[j])) {
+                    ++howMuchInTable;
+                }
+            }
+        }
+    }
+    return howMuchInTable == sizeBuffer;
 }

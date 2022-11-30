@@ -1,9 +1,16 @@
 #include "list.h"
 #include "hash.h"
+#include "test.h"
 #include <stdio.h>
 #include <stdlib.h>
 
 int main() {
+	if (test()) {
+		printf("Test correct\n");
+	} else {
+		printf("Problems...\n");
+		return -1;
+	}
 	printf("Enter a more appropriate hash table size\n");
 	int size = 0;
 	int checkScanf = scanf("%d", &size);

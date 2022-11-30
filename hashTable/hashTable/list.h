@@ -1,4 +1,6 @@
 #pragma once
+#include <stdbool.h>
+
 typedef struct List List;
 
 //Add elements to list
@@ -15,3 +17,6 @@ List* createList(int* errorCode);
 
 //Print list
 void printList(List* list);
+
+//Is string in List
+bool findStringInList(List* list, char value[]);

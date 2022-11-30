@@ -109,3 +109,17 @@ void printList(List* list) {
     }
     printf("\n");
 }
+
+bool findStringInList(List* list, char value[]) {
+    if (list == NULL) {
+        return false;
+    }
+    Node* walker = list->head;
+    while (walker != NULL) {
+        if (strcmp(walker->value, value) == 0) {
+            return true;
+        }
+        walker = walker->next;
+    }
+    return false;
+}
