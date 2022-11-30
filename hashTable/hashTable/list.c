@@ -95,3 +95,17 @@ List* createList(int *errorCode) {
     list->head = NULL;
     return list;
 }
+
+void printList(List* list) {
+    if (list == NULL || list->head == NULL) {
+        return;
+    }
+    Node* walker = list->head;
+    int i = 0;
+    while (walker != NULL) {
+        printf("\n%d: %s -- %d", i, walker->value, walker->size);
+        walker = walker->next;
+        ++i;
+    }
+    printf("\n");
+}

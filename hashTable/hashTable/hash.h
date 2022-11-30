@@ -10,3 +10,6 @@ int hashFunction(char string[], int size);
 
 //Add to hash-table
 void addToHashTable(HashTable* table, char string[], int* errorCode);
+
+//Print hash-table
+void printHashTable(HashTable* table);

@@ -42,4 +42,5 @@ int main() {
 		}
 	}
 	fclose(file);
+	printHashTable(table);
 }

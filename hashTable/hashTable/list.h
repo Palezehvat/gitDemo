@@ -12,3 +12,6 @@ void deleteNode(List* list, char value[]);
 
 //create new list
 List* createList(int* errorCode);
+
+//Print list
+void printList(List* list);

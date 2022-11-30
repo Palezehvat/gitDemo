@@ -73,3 +73,17 @@ void addToHashTable(HashTable* table, char string[], int* errorCode) {
         insertToList(table->arrayHash[index]->list, string, errorCode);
     }
 }
+
+void printHashTable(HashTable* table) {
+    if (table == NULL || table->arrayHash == NULL) {
+        return;
+    }
+    for (int i = 0; i < table->hashSize; ++i) {
+        if (table->arrayHash[i]->list != NULL) {
+            printf("%d)", i);
+            printList(table->arrayHash[i]->list);
+        } else {
+            printf("%d)\n", i);
+        }
+    }
+}
