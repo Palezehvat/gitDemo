@@ -62,6 +62,7 @@ Error workWithGraph(const char* fileName) {
 		matrix = clearMatrix(matrix);
 		return error;
 	}
+	matrix = clearMatrix(matrix);
 	return ok;
 }
 

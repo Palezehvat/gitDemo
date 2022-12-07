@@ -1,4 +1,6 @@
 #include "graph.h"
+#include "list.h"
+#include "stack.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdbool.h>
@@ -56,6 +58,7 @@ AdjacencyMatrix* createMatrix(int sizeMatrix, Error errorCheck) {
 			matrix->arrayMatrix[i][j].isExists = false;
 			matrix->arrayMatrix[i][j].sizeRoad = 0;
 			matrix->arrayMatrix[i][j].item = road;
+			matrix->arrayMatrix[i][j].controledTown = -1;
 		}
 	}
 	for (int i = 0; i < sizeMatrix; ++i) {
@@ -67,9 +70,25 @@ AdjacencyMatrix* createMatrix(int sizeMatrix, Error errorCheck) {
 	return matrix;
 }
 
-Error addToCapitalControlledTown(int numberCapital, AdjacencyMatrix* matrix) {
+Error addToCapitalControlledTown(int numberCapital, AdjacencyMatrix* matrix, Stack* stack, Error errorCheck) {
 	if (matrix == NULL) {
 		return error;
+	}
+	for (int i = 0; i < matrix->sizeMatrix; ++i) {
+		if (matrix->arrayMatrix[numberCapital][i].isExists && i != numberCapital) {
+			if (matrix->arrayMatrix[numberCapital][i].controledTown == numberCapital) {
+				pushElements(stack, matrix->arrayMatrix[numberCapital][i].controledTown);
+				addToCapitalControlledTown(i, matrix, stack, errorCheck);
+				if (errorCheck == error) {
+					return error;
+				}
+			} else if (matrix->arrayMatrix[numberCapital][i].controledTown == -1) {
+				int item = top(stack);
+				if (item == -1 || ) {
+
+				}
+			}
+		}
 	}
 	return ok;
 }
@@ -85,11 +104,14 @@ Error addRoad(int from, int to, int sizeRoad, AdjacencyMatrix* matrix) {
 	return ok;
 }
 
-Error addCapital(int numberCapital, AdjacencyMatrix* matrix) {
-	if (matrix == NULL) {
+Error addCapital(int numberCapital, AdjacencyMatrix* matrix, List* list) {
+	if (matrix == NULL || list == NULL) {
 		return error;
 	}
 	if (numberCapital >= matrix->sizeMatrix) {
+		return error;
+	}
+	if (addCapitalToList(list, numberCapital) == error) {
 		return error;
 	}
 	matrix->arrayMatrix[numberCapital][matrix->sizeMatrix].item = capital;
