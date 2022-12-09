@@ -4,147 +4,89 @@
 #include <string.h>
 #include <stdbool.h>
 
-int plus(ElementStack** buffer, int* errorCode) {
-	if (*buffer == NULL) {
-		*errorCode = 0;
-		return 0;
-	}
-	int firstNumber = popElements(buffer, errorCode);
-	if (*errorCode == 1) {
-		return 0;
-	}
-	int secondNumber = popElements(buffer, errorCode);
-	if (*errorCode == 1) {
-		return 0;
-	}
-	return firstNumber + secondNumber;
-}
-
-int minus(ElementStack** buffer, int* errorCode) {
-	if (*buffer == NULL) {
-		*errorCode = 0;
-		return 0;
-	}
-	int firstNumber = popElements(buffer, errorCode);
-	if (*errorCode == 1) {
-		return 0;
-	}
-	int secondNumber = popElements(buffer, errorCode);
-	if (*errorCode == 1) {
-		return 0;
-	}
-	return secondNumber - firstNumber;
-}
-
-int multiply(ElementStack** buffer, int* errorCode) {
-	if (*buffer == NULL) {
-		*errorCode = 0;
-		return 0;
-	}
-	int firstNumber = popElements(buffer, errorCode);
-	if (*errorCode == 1) {
-		return 0;
-	}
-	int secondNumber = popElements(buffer, errorCode);
-	if (*errorCode == 1) {
-		return 0;
-	}
-	return firstNumber * secondNumber;
-}
-
-int divide(ElementStack** buffer, int* errorCode) {
-	if (*buffer == NULL) {
-		*errorCode = 1;
-		return 0;
-	}
-	int firstNumber = popElements(buffer, errorCode);
-	if (*errorCode == 1) {
-		return 0;
-	}
-	int secondNumber = popElements(buffer, errorCode);
-	if (*errorCode == 1) {
-		return 0;
-	}
-
-	return  secondNumber / firstNumber;
-}
-
-int elementsForStack(char stringOfActions[], int* errorCode) {
+int calculate(const char stringOfActions[], int* errorCode) {
 	size_t sizeString = strlen(stringOfActions);
 	size_t i = 0;
 	ElementStack* buffer = NULL;
-	while(i < sizeString) {
-		int number = 0;
-		int multiplier = 1;
+	while (i < sizeString) {
 		if (stringOfActions[i] >= '0' && stringOfActions[i] <= '9') {
+			int multiplier = 10;
+			int number = 0;
 			while (stringOfActions[i] >= '0' && stringOfActions[i] <= '9') {
+				number += stringOfActions[i] - '0';
 				number *= multiplier;
-				number += ((int)stringOfActions[i] - 48);
-				multiplier = 10;
 				++i;
 			}
+			number /= 10;
 			--i;
 			pushElements(&buffer, number);
-		} else {
-			if (stringOfActions[i] == '*') {
-				int numberAfter = multiply(&buffer, errorCode);
-				if (*errorCode == 1) {
-					return 0;
-				}
-				pushElements(&buffer, numberAfter);
+		} else if (stringOfActions[i] != ' ') {
+			int numberAfter = 0;
+
+			int firstNumber = popElements(&buffer, errorCode);
+			if (*errorCode == 1) {
+				return 0;
 			}
-			else if (stringOfActions[i] == '+') {
-				int numberAfter = plus(&buffer, errorCode);
-				if (*errorCode == 1) {
-					return 0;
-				}
-				pushElements(&buffer, numberAfter);
+			int secondNumber = popElements(&buffer, errorCode);
+			if (*errorCode == 1) {
+				return 0;
 			}
-			else if (stringOfActions[i] == '-') {
-				int numberAfter = minus(&buffer, errorCode);
-				if (*errorCode == 1) {
-					return 0;
-				}
-				pushElements(&buffer, numberAfter);
+			
+			switch (stringOfActions[i]) {
+			case '*':
+				numberAfter = firstNumber * secondNumber;
+				break;
+			case '+':
+				numberAfter = firstNumber + secondNumber;
+				break;
+			case '-':
+				numberAfter = secondNumber - firstNumber;
+				break;
+			case '/':
+				numberAfter = secondNumber / firstNumber;
+				break;
 			}
-			else if (stringOfActions[i] == '/') {
-				int numberAfter = divide(&buffer, errorCode);
-				if (*errorCode == 1) {
-					return 0;
-				}
-				pushElements(&buffer, numberAfter);
+			
+			if (*errorCode == 1) {
+				clear(&buffer);
+				return 0;
 			}
+
+			pushElements(&buffer, numberAfter);
 		}
 		++i;
 	}
+
 	int result = popElements(&buffer, errorCode);
 	if (*errorCode == 1) {
 		return 0;
 	}
+
 	if (buffer != NULL) {
 		printf("Вы скорей всего ошиблись в вводе\n");
 		return 0;
 	}
+
 	return result;
 }
 
 bool firstTest(void) {
-	char testString[6] = { '1',' ', '2', ' ', '+', '\0' };
+	const char *testString = "1 2 +";
 	int errorCode = 0;
-	return elementsForStack(testString, &errorCode) == 3 && errorCode == 0 ? true : false;
+	return calculate(testString, &errorCode) == 3 && errorCode == 0;
 }
 
-bool seconfTest(void) {
-	char testString[14] = { '1',' ', '2', ' ', '+', ' ', '4', ' ', '3', ' ', '*', ' ', '*', '\0' };
+bool secondTest(void) {
+	const char *testString = "1 2 + 4 3 * *";
 	int errorCode = 0;
-	return elementsForStack(testString, &errorCode) == 36 && errorCode == 0 ? true : false;
+	return calculate(testString, &errorCode) == 36 && errorCode == 0;
 }
 
 int main() {
 	setlocale(LC_ALL, "RUS");
-	if (!firstTest() || !seconfTest()) {
+	if (!firstTest() || !secondTest()) {
 		printf("Что-то пошло не так...\n");
-		return 0;
+		return -1;
 	} else {
 		printf("Тесты успешно пройдены!\n");
 	}
@@ -152,7 +94,7 @@ int main() {
 	printf("Введите последовательность цифр и арифметических действий, строка не должна превышать 100 символов\n");
 	gets_s(stringOfActions, 100);
 	int errorCode = 0;
-	int result = elementsForStack(stringOfActions, &errorCode);
+	int result = calculate(stringOfActions, &errorCode);
 	if (errorCode == 1) {
 		printf("Ошибка...\n");
 	} else {
