@@ -6,140 +6,154 @@
 #include <stdbool.h>
 
 typedef enum Error {
+	memmoryError,
+	anotherError,
+	nullGraph,
+	outOfGraph,
+	fileError,
 	ok,
-	error
-}; 
-
-typedef enum Item {
-	road,
-	notCapital,
-	capital
 };
 
-typedef struct ValueRoadAndInfoAboutCity {
-	bool isExists;
-	int sizeRoad;
-	enum Item item;
-	int controledTown;
-} ValueRoadAndInfoAboutCity;
+typedef enum TypeTown {
+	capital,
+	notBusy,
+	Busy
+}TypeTown;
 
-typedef struct AdjacencyMatrix {
-	int sizeMatrix;
-	struct ValueRoadAndInfoAboutCity** arrayMatrix;
-};
+typedef struct Node {
+	int vertex;
+	TypeTown typeTown;
+	int onWhichControl;
+	struct Node* next;
+	int sizeRoadWithMainVertex;
+}Node;
 
-AdjacencyMatrix* createMatrix(int sizeMatrix, Error errorCheck) {
-	if (sizeMatrix == INT_MAX) {
-		errorCheck = error;
+typedef struct Graph {
+	int numNode;
+	struct Node** nodeList;
+}Graph;
+
+Graph* createGraph(Error errorCheck, int sizeGraph) {
+	Graph* graph = calloc(1, sizeof(Graph));
+	if (graph == NULL) {
+		errorCheck = memmoryError;
 		return NULL;
 	}
-	AdjacencyMatrix* matrix = calloc(sizeMatrix, sizeof(AdjacencyMatrix));
-	if (matrix == NULL) {
-		errorCheck = error;
+	graph->numNode = sizeGraph;
+	graph->nodeList = (Node**)malloc(sizeGraph * sizeof(Node));
+	if (graph->nodeList == NULL) {
+		errorCheck = memmoryError;
+		free(graph);
 		return NULL;
 	}
-	matrix->arrayMatrix = (ValueRoadAndInfoAboutCity**)malloc(sizeMatrix * sizeof(ValueRoadAndInfoAboutCity*));
-	if (matrix->arrayMatrix == NULL) {
-		errorCheck = error;
-		free(matrix);
-		return NULL;
-	}
-	for (int i = 0; i < sizeMatrix; ++i) {
-		matrix->arrayMatrix[i] = (ValueRoadAndInfoAboutCity*)malloc((sizeMatrix + 1) * sizeof(ValueRoadAndInfoAboutCity));
-		if (matrix->arrayMatrix[i] == NULL) {
+	for (int i = 0; i < sizeGraph; ++i) {
+		graph->nodeList[i] = calloc(1, sizeof(Node*));
+		if (graph->nodeList[i] == NULL) {
+			errorCheck = memmoryError;
 			for (int j = 0; j < i; ++j) {
-				free(matrix->arrayMatrix[j]);
+				free(graph->nodeList[j]);
 			}
-			free(matrix);
-			errorCheck = error;
+			free(graph);
 			return NULL;
 		}
-		for (int j = 0; j < sizeMatrix; ++j) {
-			matrix->arrayMatrix[i][j].isExists = false;
-			matrix->arrayMatrix[i][j].sizeRoad = 0;
-			matrix->arrayMatrix[i][j].item = road;
-			matrix->arrayMatrix[i][j].controledTown = -1;
-		}
+		graph->nodeList[i][0].vertex = i;
+		graph->nodeList[i][0].next = NULL;
+		graph->nodeList[i][0].onWhichControl = -1;
+		graph->nodeList[i][0].typeTown = notBusy;
 	}
-	for (int i = 0; i < sizeMatrix; ++i) {
-		matrix->arrayMatrix[i][sizeMatrix].item = notCapital;
-		matrix->arrayMatrix[i][sizeMatrix].isExists = false;
-		matrix->arrayMatrix[i][sizeMatrix].sizeRoad = 0;
-	}
-	matrix->sizeMatrix = sizeMatrix;
-	return matrix;
+
+	return graph;
 }
 
-Error addToCapitalControlledTown(int numberCapital, AdjacencyMatrix* matrix, Stack* stack, Error errorCheck) {
-	if (matrix == NULL) {
-		return error;
+void helpToAddRoad(Graph* graph, int firstNode, int secondNode, int sizeRoad, Error errorCheck) {
+	Node* walkerInGraph = graph->nodeList[firstNode];
+	while (walkerInGraph->next != NULL) {
+		walkerInGraph = walkerInGraph->next;
 	}
-	for (int i = 0; i < matrix->sizeMatrix; ++i) {
-		if (matrix->arrayMatrix[numberCapital][i].isExists && i != numberCapital) {
-			if (matrix->arrayMatrix[numberCapital][i].controledTown == numberCapital) {
-				pushElements(stack, matrix->arrayMatrix[numberCapital][i].controledTown);
-				addToCapitalControlledTown(i, matrix, stack, errorCheck);
-				if (errorCheck == error) {
-					return error;
-				}
-			} else if (matrix->arrayMatrix[numberCapital][i].controledTown == -1) {
-				int item = top(stack);
-				if (item == -1 || ) {
+	Node* temp = calloc(1, sizeof(Node));
+	if (temp == NULL) {
+		errorCheck = memmoryError;
+		for (int i = 0; i < graph->numNode; ++i) {
+			free(graph->nodeList[i]);
+		}
+		free(graph);
+		return;
+	}
+	walkerInGraph->sizeRoadWithMainVertex = sizeRoad;
+	temp->vertex = secondNode;
+	temp->next = NULL;
+	temp->onWhichControl = -1;
+	temp->typeTown = notBusy;
+	walkerInGraph->next = temp;
+}
 
-				}
+void addRoad(Graph* graph, Error errorCheck, int firstNode, int secondNode, int sizeRoad) {
+	if (graph == NULL) {
+		errorCheck = nullGraph;
+		return;
+	}
+	if (firstNode >= graph->numNode || secondNode >= graph->numNode) {
+		errorCheck = outOfGraph;
+		for (int i = 0; i < graph->numNode; ++i) {
+			free(graph->nodeList[i]);
+		}
+		free(graph);
+		return;
+	}
+	helpToAddRoad(graph, firstNode, secondNode, sizeRoad, errorCheck);
+	if (errorCheck != ok) {
+		return;
+	}
+
+	if (firstNode != secondNode) {
+		helpToAddRoad(graph, secondNode, firstNode, sizeRoad, errorCheck);
+		if (errorCheck != ok) {
+			return;
+		}
+	}
+}
+
+void printGraph(Graph* graph) {
+	if (graph == NULL) {
+		return;
+	}
+	for (int i = 0; i < graph->numNode; ++i) {
+		Node* walker = graph->nodeList[i];
+		printf("%d: ", walker->vertex);
+		if (walker->next != NULL) {
+			printf("-%d- ", walker->sizeRoadWithMainVertex);
+		}
+		walker = walker->next;
+		while (walker != NULL) {
+			printf("%d ", walker->vertex); if (walker->next != NULL) {
+				printf("-%d- ", walker->sizeRoadWithMainVertex);
 			}
-		}
-	}
-	return ok;
-}
-
-Error addRoad(int from, int to, int sizeRoad, AdjacencyMatrix* matrix) {
-	if (matrix == NULL || from >= matrix->sizeMatrix || to >= matrix->sizeMatrix) {
-		return error;
-	}
-	matrix->arrayMatrix[from][to].isExists = true;
-	matrix->arrayMatrix[from][to].sizeRoad = sizeRoad;
-	matrix->arrayMatrix[to][from].isExists = true;
-	matrix->arrayMatrix[to][from].sizeRoad = sizeRoad;
-	return ok;
-}
-
-Error addCapital(int numberCapital, AdjacencyMatrix* matrix, List* list) {
-	if (matrix == NULL || list == NULL) {
-		return error;
-	}
-	if (numberCapital >= matrix->sizeMatrix) {
-		return error;
-	}
-	if (addCapitalToList(list, numberCapital) == error) {
-		return error;
-	}
-	matrix->arrayMatrix[numberCapital][matrix->sizeMatrix].item = capital;
-	return ok;
-}
-
-Error printMatrix(AdjacencyMatrix* matrix) {
-	if (matrix == NULL) {
-		return  error;
-	}
-	for (int i = 0; i < matrix->sizeMatrix; ++i) {
-		printf("matrix[%2d][] - ", i);
-		for (int j = 0; j < matrix->sizeMatrix; ++j) {
-			printf("%4d", matrix->arrayMatrix[i][j].sizeRoad);
+			walker = walker->next;
 		}
 		printf("\n");
 	}
-	return ok;
 }
 
-AdjacencyMatrix* clearMatrix(AdjacencyMatrix* matrix) {
-	if (matrix == NULL) {
-		return NULL;
+void addCapital(Graph* graph, int numberCapital, Error checkError) {
+	if (numberCapital >= graph->numNode) {
+		checkError = anotherError;
+		return;
 	}
-	for (int i = 0; i < matrix->sizeMatrix; ++i) {
-		free(matrix->arrayMatrix[i]);
+	if (graph == NULL) {
+		checkError = anotherError;
+		return;
 	}
-	free(matrix->arrayMatrix);
-	free(matrix);
-	return NULL;
+	graph->nodeList[numberCapital]->typeTown = capital;
+}
+
+void recursionAddTown(Graph* graph, int* min, int* numberTown) {
+	{
+
+	}
+}
+
+void addTown(Graph* graph, int numberTown) {
+	int min = -1;
+	int numberAddedTown = -1;
+	recursionAddTown(graph, &min, &numberTown);
 }

@@ -4,65 +4,43 @@
 #include <stdbool.h>
 
 typedef enum Error {
+	memmoryError,
+	anotherError,
+	nullGraph,
+	outOfGraph,
+	fileError,
 	ok,
-	error
 };
 
 Error workWithGraph(const char* fileName) {
-	Error checkError = 0;
+	Error errorCheck = ok;
 	FILE* file = fopen(fileName, "r");
 	if (file == NULL) {
-		return error;
+		return fileError;
 	}
+	int numberOfTowns = 0;
+	if (fscanf(file, "%d", &numberOfTowns) != 1) {
+		return fileError;
+	}
+	Graph* graph = createGraph(errorCheck, numberOfTowns);
+
 	int numberOfRoads = 0;
 	if (fscanf(file, "%d", &numberOfRoads) != 1) {
-		return error;
+		return fileError;
 	}
-	AdjacencyMatrix* matrix = createMatrix(numberOfRoads, checkError);
-	if (checkError != ok) {
-		return error;
-	}
-	int numberOfPaths = 0;
-	if (fscanf(file, "%d", &numberOfPaths) != 1) {
-		matrix = clearMatrix(matrix);
-		return error;
-	}
-	for (int i = 0; i < numberOfPaths; ++i) {
-		int to = 0;
-		int from = 0;
-		int sizeRoad = 0;
-		if (fscanf(file, "%d %d %d", &from, &to, &sizeRoad) != 3) {
-			matrix = clearMatrix(matrix);
-			return error;
+	int firstTown = 0;
+	int secondTown = 0;
+	int sizeRoad = 0;
+	for (int i = 0; i < numberOfRoads; ++i) {
+		if (fscanf(file, "%d %d %d", &firstTown, &secondTown, &sizeRoad) != 3) {
+			return fileError;
 		}
-		checkError = addRoad(from, to, sizeRoad, matrix);
-		if (checkError != ok) {
-			matrix = clearMatrix(matrix);
-			return error;
+		addRoad(graph, errorCheck, firstTown, secondTown, sizeRoad);
+		if (errorCheck != ok) {
+			return errorCheck;
 		}
 	}
-	int sizeCapitals = 0;
-	if (fscanf(file, "%d", &sizeCapitals) != 1) {
-		matrix = clearMatrix(matrix);
-		return error;
-	}
-	int numberCapital = 0;
-	for (int i = 0; i < sizeCapitals; ++i) {
-		if (fscanf(file, "%d", &numberCapital) != 1) {
-			matrix = clearMatrix(matrix);
-			return error;
-		}
-		if (addCapital(numberCapital, matrix) != ok) {
-			matrix = clearMatrix(matrix);
-			return error;
-		}
-	}
-	fclose(file);
-	if (printMatrix(matrix) != ok) {
-		matrix = clearMatrix(matrix);
-		return error;
-	}
-	matrix = clearMatrix(matrix);
+	printGraph(graph);
 	return ok;
 }
 

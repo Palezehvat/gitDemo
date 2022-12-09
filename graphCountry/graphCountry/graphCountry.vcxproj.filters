@@ -21,22 +21,15 @@
     <ClCompile Include="graph.c">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="list.c">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="stack.c">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="graph.h">
       <Filter>Исходные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="list.h">
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="test.txt">
       <Filter>Исходные файлы</Filter>
-    </ClInclude>
-    <ClInclude Include="stack.h">
-      <Filter>Исходные файлы</Filter>
-    </ClInclude>
+    </Text>
   </ItemGroup>
 </Project>

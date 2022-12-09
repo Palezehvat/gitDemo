@@ -1,15 +1,10 @@
 #pragma once
 
-typedef enum Error Error;
-typedef struct AdjacencyMatrix AdjacencyMatrix;
 typedef struct Graph Graph;
+typedef enum Error Error;
 
-AdjacencyMatrix* createMatrix(int sizeMatrix, Error error);
+Graph* createGraph(Error errorCheck, int sizeGraph);
 
-Error addRoad(int numberCityFrom, int numberCityTo, int sizeRoad, AdjacencyMatrix* matrix);
+void addRoad(Graph* graph, Error errorCheck, int firstNode, int secondNode, int sizeRoad);
 
-Error printMatrix(AdjacencyMatrix* matrix);
-
-Error addCapital(int numberCapital, AdjacencyMatrix* matrix);
-
-AdjacencyMatrix* clearMatrix(AdjacencyMatrix* matrix);
+void printGraph(Graph* graph);
