@@ -1,3 +1,5 @@
+#include "test.h"
+#include "KMP.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdbool.h>
@@ -36,49 +38,6 @@ char* getLine(int* lengthString, int* errorCode) {
 	return string;
 }
 
-int* prefixFunction(const char* string) {
-	int* prefixArray = calloc(strlen(string), sizeof(int));
-	if (prefixArray == NULL) {
-		return NULL;
-	}
-	prefixArray[0] = 0;
-	size_t sizeString = strlen(string);
-	for (size_t i = 1, j = 0; i < sizeString; ++i) {
-		while (j > 0 && string[j] != string[i]) {
-			j = prefixArray[j - 1];
-		}
-		if (string[i] == string[j]) {
-			++j;
-		}
-		prefixArray[i] = j;
-	}
-	return prefixArray;
-}
-
-int findIndexSubstring(const char* string, const char* substring, int* errorCode) {
-	size_t sizeString = strlen(string);
-	size_t sizeSubstring = strlen(substring);
-	int result = -1;
-	if (sizeString == 0 || sizeSubstring == 0 || sizeString < sizeSubstring) {
-		return -1;
-	}
-	int* prefixArray = prefixFunction(substring);
-	for (int i = 0, j = 0; i < sizeString; ++i) {
-		while (j > 0 && prefixArray[j] != prefixArray[i]) {
-			j = prefixArray[j - 1];
-		}
-		if (prefixArray[j] == prefixArray[i]) {
-			++j;
-		}
-		if (j == sizeSubstring) {
-			free(prefixArray);
-			return i - j + 1;
-		}
-	}
-	free(prefixArray);
-	return -1;
-}
-
 int workWithFile(const char* nameFile, int* errorCode, int sizeSubstring, const char* substring) {
 	FILE* file;
 	*errorCode = fopen_s(&file, nameFile, "r");
@@ -92,22 +51,27 @@ int workWithFile(const char* nameFile, int* errorCode, int sizeSubstring, const 
 	int steps = 1;
 	size_t sizeBuffer = 0;
 	size_t sizeCopyText = 0;
+	int index = 0;
+	int indexToReturn = 0;
 	while (fgets(copyText, 200, file) != NULL) {
 		switch (steps)
 		{
 		case 1:
+			index = findIndexSubstring(copyText, substring, errorCode);
 			strcpy(buffer, copyText);
 			steps = 2;
 			break;
 		case 2:
 			sizeBuffer = strlen(buffer);
 			sizeCopyText = strlen(copyText);
-			for (int i = sizeBuffer; i < sizeCopyText; ++i) {
-				buffer[i] = copyText[i];
+			for (int i = sizeBuffer; i < sizeBuffer + sizeCopyText; ++i) {
+				buffer[i] = copyText[i - 199];
 			}
 			steps = 3;
+			index = findIndexSubstring(buffer, substring, errorCode);
 			break;
 		case 3:
+			indexToReturn += 199;
 			sizeBuffer = strlen(buffer);
 			if (sizeBuffer >= 200) {
 				int difference = sizeBuffer - 199;
@@ -116,23 +80,28 @@ int workWithFile(const char* nameFile, int* errorCode, int sizeSubstring, const 
 				}
 			}
 			sizeCopyText = strlen(copyText);
-			for (int i = 0; i < copyText; ++i) {
-				buffer[i + 200] = copyText[i];
+			for (int i = 0; i < sizeCopyText; ++i) {
+				buffer[i + 199] = copyText[i];
 			}
+			index = findIndexSubstring(buffer, substring, errorCode);
 			break;
 		}
-		int index = findIndexSubstring(buffer, substring, errorCode);
 		if (index != -1) {
-			return index;
+			return index + indexToReturn;
 		}
 		if (*errorCode != 0) {
 			return -1;
 		}
-		memset(copyText, 0, 200);	
+		memset(copyText, 0, 200);
 	}
 }
 
 int main() {
+	if (test()) {
+		printf("Test correct!\n");
+	} else {
+		printf("Test not correct!\n");
+	}
 	printf("Input file name with extension\n");
 	int errorCode = 0;
 	int sizeFile = 0;
