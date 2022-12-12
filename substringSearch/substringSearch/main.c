@@ -87,13 +87,16 @@ int workWithFile(const char* nameFile, int* errorCode, int sizeSubstring, const 
 			break;
 		}
 		if (index != -1) {
+			fclose(file);
 			return index + indexToReturn;
 		}
 		if (*errorCode != 0) {
+			fclose(file);
 			return -1;
 		}
 		memset(copyText, 0, 200);
 	}
+	fclose(file);
 }
 
 int main() {
@@ -115,6 +118,7 @@ int main() {
 	char* substring = getLine(&sizeSubstring, &errorCode);
 	if (errorCode != 0 || substring == NULL) {
 		printf("Error\n");
+		free(nameFile);
 		return -1;
 	}
 	while (sizeSubstring > 100) {
@@ -123,12 +127,15 @@ int main() {
 		substring = getLine(&sizeSubstring, &errorCode);
 		if (errorCode != 0 || substring == NULL) {
 			printf("Error\n");
+			free(nameFile);
 			return -1;
 		}
 	}
 	int number = workWithFile(nameFile, &errorCode, sizeSubstring, substring);
 	if (errorCode != 0) {
 		printf("Error\n");
+		free(nameFile);
+		free(substring);
 		return -1;
 	}
 	free(nameFile);
