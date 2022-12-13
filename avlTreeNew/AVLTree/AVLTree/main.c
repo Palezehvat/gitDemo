@@ -93,6 +93,7 @@ int main() {
 		printf("Ошибка...\n");
 		return -1;
 	}
+	
 	if (!talkWithUser()) {
 		printf("Ошибка...\n");
 		return -1;
