@@ -21,9 +21,15 @@
     <ClCompile Include="stack.c">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="queue.c">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stack.h">
+      <Filter>Исходные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="queue.h">
       <Filter>Исходные файлы</Filter>
     </ClInclude>
   </ItemGroup>
