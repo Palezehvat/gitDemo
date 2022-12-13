@@ -141,6 +141,7 @@
   <ItemGroup>
     <ClCompile Include="binaryTree.c" />
     <ClCompile Include="doubleList.c" />
+    <ClCompile Include="graphByList.c" />
     <ClCompile Include="list.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="queue.c" />
@@ -149,6 +150,7 @@
   <ItemGroup>
     <ClInclude Include="binaryTree.h" />
     <ClInclude Include="doubleList.h" />
+    <ClInclude Include="graphByList.h" />
     <ClInclude Include="list.h" />
     <ClInclude Include="queue.h" />
     <ClInclude Include="stack.h" />
