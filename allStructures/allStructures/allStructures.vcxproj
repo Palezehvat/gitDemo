@@ -139,6 +139,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="binaryTree.c" />
     <ClCompile Include="doubleList.c" />
     <ClCompile Include="list.c" />
     <ClCompile Include="main.c" />
@@ -146,6 +147,7 @@
     <ClCompile Include="stack.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="binaryTree.h" />
     <ClInclude Include="doubleList.h" />
     <ClInclude Include="list.h" />
     <ClInclude Include="queue.h" />

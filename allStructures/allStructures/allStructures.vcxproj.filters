@@ -30,6 +30,9 @@
     <ClCompile Include="doubleList.c">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="binaryTree.c">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stack.h">
@@ -42,6 +45,9 @@
       <Filter>Исходные файлы</Filter>
     </ClInclude>
     <ClInclude Include="doubleList.h">
+      <Filter>Исходные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="binaryTree.h">
       <Filter>Исходные файлы</Filter>
     </ClInclude>
   </ItemGroup>
