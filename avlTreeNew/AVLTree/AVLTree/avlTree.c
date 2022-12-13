@@ -85,21 +85,23 @@ Node* rotateRight(Node* a) {
 	return b;
 }
 
-Node* balance(Node* node) {
+Node* balance(Node* node, bool* wasBalance) {
 	if (node->data.balance == 2) {
 		if (node->right->data.balance < 0)
 			node->right = rotateLeft(node->right);
+		*wasBalance = true;
 		return rotateLeft(node);
 	}
 	if (node->data.balance == -2) {
 		if (node->left->data.balance > 0)
 			node->left = rotateRight(node->left);
+		*wasBalance = true;
 		return rotateRight(node);
 	}
 	return node;
 }
 
-Node* helpedToInsert(Node* root, int key, char* string, const bool isKeyInTree) {
+Node* helpedToInsert(Node* root, int key, char* string, const bool isKeyInTree, bool* wasBalance) {
 	if (root == NULL) {
 		Node* newNode = createElementTree();
 		newNode->data.value = string;
@@ -111,22 +113,23 @@ Node* helpedToInsert(Node* root, int key, char* string, const bool isKeyInTree) 
 		return root;
 	}
 	if (key < root->data.key) {
-		root->left = helpedToInsert(root->left, key, string, isKeyInTree);
-		if (!isKeyInTree) {
+		root->left = helpedToInsert(root->left, key, string, isKeyInTree, wasBalance);
+		if (!isKeyInTree && !*wasBalance) {
 			--root->data.balance;
 		}
 	}
 	else {
-		root->right = helpedToInsert(root->right, key, string, isKeyInTree);
-		if (!isKeyInTree) {
+		root->right = helpedToInsert(root->right, key, string, isKeyInTree, wasBalance);
+		if (!isKeyInTree && !*wasBalance) {
 			++root->data.balance;
 		}
 	}
-	return balance(root);
+	return balance(root, wasBalance);
 }
 
 void addToTree(Tree* tree, int key, char* string) {
-	tree->root = helpedToInsert(tree->root, key, string, isKeyInTree(tree, key));
+	bool wasBalance = false;
+	tree->root = helpedToInsert(tree->root, key, string, isKeyInTree(tree, key), &wasBalance);
 }
 
 char* returnValueByKey(Tree* tree, int key) {
@@ -169,7 +172,7 @@ bool isKeyInTree(Tree* tree, int key) {
 	return false;
 }
 
-Node* deleteNode(Node* root, int key, Tree* tree, Node* previousRoot, Node* theMostBigLeft, bool firstLeft, const bool ifUseFile) {
+Node* deleteNode(Node* root, int key, Tree* tree, Node* previousRoot, Node* theMostBigLeft, bool firstLeft, const bool ifUseFile, bool* wasBalance) {
 	if (!firstLeft && theMostBigLeft->right == NULL) {
 		Node* tempLeft = root->left;
 		if (!ifUseFile) {
@@ -187,24 +190,24 @@ Node* deleteNode(Node* root, int key, Tree* tree, Node* previousRoot, Node* theM
 		return NULL;
 	} else {
 		if (firstLeft) {
-			root->left = deleteNode(root, key, tree, previousRoot, root->left, false, ifUseFile);
+			root->left = deleteNode(root, key, tree, previousRoot, root->left, false, ifUseFile, wasBalance);
 			if (root->left == NULL) {
-				return balance(root);
+				return balance(root, wasBalance);
 			}
-			return balance(root);
+			return balance(root, wasBalance);
 		}
 		else {
-			theMostBigLeft->right = deleteNode(root, key, tree, previousRoot, theMostBigLeft->right, false, ifUseFile);
+			theMostBigLeft->right = deleteNode(root, key, tree, previousRoot, theMostBigLeft->right, false, ifUseFile, wasBalance);
 			--theMostBigLeft->data.balance;
 			if (theMostBigLeft->right == NULL) {
 				return theMostBigLeft;
 			}
 		}
 	}
-	return balance(theMostBigLeft);
+	return balance(theMostBigLeft, wasBalance);
 }
 
-Node* helpDeleteNodeInTreeByKey(Node* root, int key, Tree* tree, Node* previousRoot, const bool ifUseFile) {
+Node* helpDeleteNodeInTreeByKey(Node* root, int key, Tree* tree, Node* previousRoot, const bool ifUseFile, bool* wasBalance) {
 	if (root == NULL) {
 		return NULL;
 	}
@@ -226,7 +229,7 @@ Node* helpDeleteNodeInTreeByKey(Node* root, int key, Tree* tree, Node* previousR
 			}
 			return temp;
 		}
-		root = deleteNode(root, key, tree, previousRoot, NULL, true, ifUseFile);
+		root = deleteNode(root, key, tree, previousRoot, NULL, true, ifUseFile, wasBalance);
 		if (previousRoot == NULL) {
 			tree->root = root;
 		} else {
@@ -240,18 +243,19 @@ Node* helpDeleteNodeInTreeByKey(Node* root, int key, Tree* tree, Node* previousR
 		return root;
 	}
 	if (key < root->data.key) {
-		root->left = helpDeleteNodeInTreeByKey(root->left, key, tree, root, ifUseFile);
+		root->left = helpDeleteNodeInTreeByKey(root->left, key, tree, root, ifUseFile, wasBalance);
 		++root->data.balance;
 	}
 	else {
-		root->right = helpDeleteNodeInTreeByKey(root->right, key, tree, root, ifUseFile);
+		root->right = helpDeleteNodeInTreeByKey(root->right, key, tree, root, ifUseFile, wasBalance);
 		--root->data.balance;
 	}
-	return balance(root);
+	return balance(root, wasBalance);
 }
 
 void deleteNodeInTreeByKey(Tree* tree, int key, const bool ifUseFile) {
 	if (isKeyInTree(tree, key)) {
-		tree->root = helpDeleteNodeInTreeByKey(tree->root, key, tree, NULL, ifUseFile);
+		bool wasBalance = false;
+		tree->root = helpDeleteNodeInTreeByKey(tree->root, key, tree, NULL, ifUseFile, &wasBalance);
 	}
 }
