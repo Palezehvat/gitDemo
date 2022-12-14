@@ -52,16 +52,13 @@ Node* rotateLeft(Node* a)
 {
 	Node* b = a->right;
 	Node* c = b->left;
-	if (a->left == NULL) {
-		if (b->left == NULL) {
-			a->data.balance = 0;
-		} else {
-			a->data.balance = b->left->data.balance + 1;
-		}
+	if (b->data.balance == 0) {
+		b->data.balance = 1;
+		a->data.balance = -1;
 	} else {
-		a->data.balance = b->left->data.balance - a->left->data.balance;
+		b->data.balance = 0;
+		a->data.balance = 0;
 	}
-	b->data.balance = b->right->data.balance - a->data.balance;
 	b->left = a;
 	a->right = c;
 	return b;
@@ -70,16 +67,13 @@ Node* rotateLeft(Node* a)
 Node* rotateRight(Node* a) {
 	Node* b = a->left;
 	Node* c = b->right;
-	if (a->right == NULL) {
-		if (b->right == NULL) {
-			a->data.balance = 0;
-		} else {
-			a->data.balance = b->right->data.balance + 1;
-		}
+	if (b->data.balance == 0) {
+		b->data.balance = -1;
+		a->data.balance = 1;
 	} else {
-		a->data.balance = b->right->data.balance - a->right->data.balance;
+		a->data.balance = 0;
+		b->data.balance = 0;
 	}
-	b->data.balance = b->left->data.balance - a->data.balance;
 	b->right = a;
 	a->left = c;
 	return b;
