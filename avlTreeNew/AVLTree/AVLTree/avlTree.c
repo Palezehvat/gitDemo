@@ -118,6 +118,9 @@ Node* helpedToInsert(Node* root, int key, char* string, const bool isKeyInTree, 
 			++root->data.balance;
 		}
 	}
+	if (root->data.balance == 0) {
+		*wasBalance = true;
+	}
 	return balance(root, wasBalance);
 }
 
