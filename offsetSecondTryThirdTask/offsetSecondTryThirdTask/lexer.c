@@ -92,12 +92,16 @@ char* workWithFileAndReturnString(const char* nameFile, Error* errorCheck) {
 			}
 			break;
 		case fifth:
-			if (symbol >= '0' && symbol <= '9' || symbol == '-' || symbol == '.') {
+			if (symbol >= '0' && symbol <= '9' || symbol == '-') {
+				buffer[indexBuffer] = symbol;
+				++indexBuffer;
+				stage = third;
+				isNeedAddLast = false;
+			} else if (symbol == '.') {
 				buffer[indexBuffer] = symbol;
 				++indexBuffer;
 				stage = fourth;
 				isNeedAddLast = false;
-				break;
 			} else {
 				strcat(result, buffer);
 				memset(buffer, 0, strlen(buffer));
