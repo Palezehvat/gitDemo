@@ -9,7 +9,8 @@ typedef enum Stage {
 	second,
 	third,
 	fourth,
-	fifth
+	fifth,
+	sixth
 } Stage;
 
 char* workWithFileAndReturnString(const char* nameFile, Error* errorCheck) {
@@ -32,26 +33,26 @@ char* workWithFileAndReturnString(const char* nameFile, Error* errorCheck) {
 				|| symbol >= '0' && symbol <= '9' || symbol == '.' || symbol == '%') {
 				buffer[indexBuffer] = symbol;
 				++indexBuffer;
-				stage = first;
-			}
-			else if (symbol == '@') {
-				buffer[indexBuffer] = symbol;
-				++indexBuffer;
 				stage = second;
-			}
-			else {
+			} else {
 				memset(buffer, 0, strlen(buffer));
 				indexBuffer = 0;
 				stage = first;
 			}
 			break;
 		case second:
-			if (symbol >= 'A' && symbol <= 'Z'
-				|| symbol >= '0' && symbol <= '9' || symbol == '-') {
+			if (symbol >= 'A' && symbol <= 'Z' || symbol == '+' || symbol == '-'
+				|| symbol >= '0' && symbol <= '9' || symbol == '.' || symbol == '%') {
+				buffer[indexBuffer] = symbol;
+				++indexBuffer;
+				stage = second;
+			}
+			else if (symbol == '@') {
 				buffer[indexBuffer] = symbol;
 				++indexBuffer;
 				stage = third;
-			} else {
+			}
+			else {
 				memset(buffer, 0, strlen(buffer));
 				indexBuffer = 0;
 				stage = first;
@@ -62,12 +63,24 @@ char* workWithFileAndReturnString(const char* nameFile, Error* errorCheck) {
 				|| symbol >= '0' && symbol <= '9' || symbol == '-') {
 				buffer[indexBuffer] = symbol;
 				++indexBuffer;
-				stage = third;
+				stage = fourth;
+			} else {
+				memset(buffer, 0, strlen(buffer));
+				indexBuffer = 0;
+				stage = first;
+			}
+			break;
+		case fourth:
+			if (symbol >= 'A' && symbol <= 'Z'
+				|| symbol >= '0' && symbol <= '9' || symbol == '-') {
+				buffer[indexBuffer] = symbol;
+				++indexBuffer;
+				stage = fourth;
 			}
 			else if (symbol == '.') {
 				buffer[indexBuffer] = symbol;
 				++indexBuffer;
-				stage = fourth;
+				stage = fifth;
 			}
 			else {
 				memset(buffer, 0, strlen(buffer));
@@ -75,32 +88,32 @@ char* workWithFileAndReturnString(const char* nameFile, Error* errorCheck) {
 				stage = first;
 			}
 			break;
-		case fourth:
+		case fifth:
 			if (symbol >= 'A' && symbol <= 'Z') {
 				buffer[indexBuffer] = symbol;
 				++indexBuffer;
-				stage = fifth;
+				stage = sixth;
 				isNeedAddLast = true;
 			} else if (symbol >= '0' && symbol <= '9' || symbol == '-') {
 				buffer[indexBuffer] = symbol;
 				++indexBuffer;
-				stage = third;
+				stage = fourth;
 			} else {
 				memset(buffer, 0, strlen(buffer));
 				indexBuffer = 0;
 				stage = first;
 			}
 			break;
-		case fifth:
+		case sixth:
 			if (symbol >= '0' && symbol <= '9' || symbol == '-') {
 				buffer[indexBuffer] = symbol;
 				++indexBuffer;
-				stage = third;
+				stage = fourth;
 				isNeedAddLast = false;
 			} else if (symbol == '.') {
 				buffer[indexBuffer] = symbol;
 				++indexBuffer;
-				stage = fourth;
+				stage = fifth;
 				isNeedAddLast = false;
 			} else {
 				strcat(result, buffer);
