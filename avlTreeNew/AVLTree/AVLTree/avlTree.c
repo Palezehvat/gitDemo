@@ -189,20 +189,28 @@ Node* deleteNode(Node* root, const char* key, Tree* tree, Node* previousRoot, No
 	} else {
 		if (firstLeft) {
 			root->left = deleteNode(root, key, tree, previousRoot, root->left, false, needToChangeBalance);
-			if (root->left == NULL) {
-				return balance(root);
+			if (!*needToChangeBalance) {
+				++root->data.balance;
 			}
-			return balance(root);
 		}
 		else {
 			theMostBigLeft->right = deleteNode(root, key, tree, previousRoot, theMostBigLeft->right, false, needToChangeBalance);
-			--theMostBigLeft->data.balance;
+			if (!*needToChangeBalance) {
+				--theMostBigLeft->data.balance;
+			}
 			if (theMostBigLeft->right == NULL) {
 				return theMostBigLeft;
 			}
 		}
 	}
-	return balance(theMostBigLeft);
+	if (root->data.balance == -1 || root->data.balance == 1) {
+		*needToChangeBalance = true;
+	}
+	Node* temp = balance(theMostBigLeft);
+	if (temp->data.balance == -1 || temp->data.balance == 1) {
+		*needToChangeBalance = true;
+	}
+	return temp;
 }
 
 Node* helpDeleteNodeInTreeByKey(Node* root, const char* key, Tree* tree, Node* previousRoot, bool* needToChangeBalance) {
