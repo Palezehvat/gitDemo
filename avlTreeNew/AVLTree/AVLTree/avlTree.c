@@ -54,8 +54,8 @@ Node* rotateLeft(Node* a)
 	Node* b = a->right;
 	Node* c = b->left;
 	if (b->data.balance == 0) {
-		b->data.balance = 1;
-		a->data.balance = -1;
+		b->data.balance += 1;
+		a->data.balance += -1;
 	} else {
 		b->data.balance = 0;
 		a->data.balance = 0;
@@ -69,8 +69,8 @@ Node* rotateRight(Node* a) {
 	Node* b = a->left;
 	Node* c = b->right;
 	if (b->data.balance == 0) {
-		b->data.balance = -1;
-		a->data.balance = 1;
+		b->data.balance += -1;
+		a->data.balance += 1;
 	} else {
 		a->data.balance = 0;
 		b->data.balance = 0;
@@ -82,13 +82,15 @@ Node* rotateRight(Node* a) {
 
 Node* balance(Node* node) {
 	if (node->data.balance == 2) {
-		if (node->right->data.balance < 0)
-			node->right = rotateLeft(node->right);
-		return  rotateLeft(node);
+		if (node->right->data.balance >= 0)
+			return rotateLeft(node);
+		node->right =  rotateRight(node->right);
+		return rotateLeft(node);
 	}
 	if (node->data.balance == -2) {
-		if (node->left->data.balance > 0)
-			node->left = rotateRight(node->left);
+		if (node->left->data.balance <= 0)
+			return rotateRight(node);
+		node->left = rotateLeft(node->left);
 		return rotateRight(node);
 	}
 	return node;
@@ -172,29 +174,34 @@ bool isKeyInTree(Tree* tree, const char* key) {
 	return false;
 }
 
-Node* deleteNode(Node* root, const char* key, Tree* tree, Node* previousRoot, Node* theMostBigLeft, bool firstLeft, bool* needToChangeBalance) {
+Node* deleteNode(Node* root, const char* key, Tree* tree, Node* previousRoot, Node* theMostBigLeft, bool firstLeft, bool* needToChangeBalance, Node* previousMostBigLeft) {
 	if (!firstLeft && theMostBigLeft->right == NULL) {
 		Node* tempLeft = root->left;
 		free(root->data.value);
 		root->data.value = theMostBigLeft->data.value;
 		strcpy(root->data.key, theMostBigLeft->data.key);
-		if (theMostBigLeft->left != NULL) {
-			root->left = theMostBigLeft->left;
-			root->left->left = tempLeft;
-			root->left->data.balance = -1 + root->left->left->data.balance;
+		if (theMostBigLeft->left != NULL && previousMostBigLeft != root) {
+			previousMostBigLeft->right = theMostBigLeft->left;
 		}
-		root->data.balance = root->right->data.balance - root->left->data.balance + 1;
 		free(theMostBigLeft);
 		return NULL;
 	} else {
 		if (firstLeft) {
-			root->left = deleteNode(root, key, tree, previousRoot, root->left, false, needToChangeBalance);
+			root->left = deleteNode(root, key, tree, previousRoot, root->left, false, needToChangeBalance, root);
 			if (!*needToChangeBalance) {
 				++root->data.balance;
 			}
+			if (root->data.balance == -1 || root->data.balance == 1) {
+				*needToChangeBalance = true;
+			}
+			Node* temp = balance(root);
+			if (temp->data.balance == -1 || temp->data.balance == 1) {
+				*needToChangeBalance = true;
+			}
+			return temp;
 		}
 		else {
-			theMostBigLeft->right = deleteNode(root, key, tree, previousRoot, theMostBigLeft->right, false, needToChangeBalance);
+			theMostBigLeft->right = deleteNode(root, key, tree, previousRoot, theMostBigLeft->right, false, needToChangeBalance, theMostBigLeft);
 			if (!*needToChangeBalance) {
 				--theMostBigLeft->data.balance;
 			}
@@ -235,7 +242,7 @@ Node* helpDeleteNodeInTreeByKey(Node* root, const char* key, Tree* tree, Node* p
 			}
 			return temp;
 		}
-		root = deleteNode(root, key, tree, previousRoot, NULL, true, needToChangeBalance);
+		root = deleteNode(root, key, tree, previousRoot, NULL, true, needToChangeBalance, root);
 		if (previousRoot == NULL) {
 			tree->root = root;
 		}
