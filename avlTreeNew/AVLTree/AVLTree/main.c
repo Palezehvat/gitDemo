@@ -21,8 +21,15 @@ bool talkWithUser(void) {
 	char* stringCopy = NULL;
 
 	while (command != 0) {
-		printf("Введите ключ\n");
-		int key = scanOne();
+		printf("Введите ключ. Не больше, чем 100 символов\n");
+		char key[100] = { '\0' };
+		int checkScanfKey = scanf("%s", key);
+		while (checkScanfKey != 1) {
+			while (getchar() != '\n') {
+			}
+			printf("Ошибка...\n");
+			checkScanfKey = scanf("%s", key);
+		}
 
 		switch (command) {
 		case 1:
@@ -69,7 +76,7 @@ bool talkWithUser(void) {
 			}
 			break;
 		case 4:
-			deleteNodeInTreeByKey(tree, key, false);
+			deleteNodeInTreeByKey(tree, key);
 			break;
 		}
 		printf("Введите следующую команду!\n");

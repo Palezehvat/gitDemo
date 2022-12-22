@@ -11,14 +11,15 @@ Tree* createTree(void);
 void clearTree(Tree* tree);
 
 //Добавление узла к дереву
-void addToTree(Tree* tree, int key, char* string);
+void addToTree(Tree* tree, const char* key, char* string);
 
 //Возвращает значение по ключу
-char* returnValueByKey(Tree* tree, int key);
+char* returnValueByKey(Tree* tree, const char* key);
 
 //Проверка наличия ключа
-bool isKeyInTree(Tree* tree, int key);
+bool isKeyInTree(Tree* tree, const char* key);
 
 //Удаление элемента по ключу
-void deleteNodeInTreeByKey(Tree* tree, int key, const bool ifUseFile);
+void deleteNodeInTreeByKey(Tree* tree, const char* key);
+
 #endif
