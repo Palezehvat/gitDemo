@@ -57,10 +57,10 @@ bool talkWithUser(void) {
 				tree = check;
 				printf("¬ведите следующую команду!\n");
 				break;
-			case 2://
+			case 2:
 				stringCopy = returnValueByKey(tree, key);
-				if (string != NULL) {
-					printf("%s\n", string);
+				if (stringCopy != NULL) {
+					printf("%s\n", stringCopy);
 				}
 				printf("¬ведите следующую команду!\n");
 				break;
