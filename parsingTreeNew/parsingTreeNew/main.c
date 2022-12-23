@@ -33,7 +33,8 @@ bool readFromFileToTree(char fileName[], Tree* tree) {
 					return false;
 				}
 				ungetc(symbol, file);
-			} else {
+			}
+			else {
 				ungetc(symbol, file);
 				fscanf(file, "%c", &letter);
 				int number = -letter - '0';
@@ -100,7 +101,8 @@ int main() {
 	setlocale(LC_ALL, "RUS");
 	if (test()) {
 		printf("Тесты прошли успешно!\n");
-	} else {
+	}
+	else {
 		printf("Ошибка...\n");
 		return -1;
 	}
