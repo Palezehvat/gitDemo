@@ -43,6 +43,7 @@ bool talkWithUser(void) {
 				size_t sizeBuffer = strlen(buffer);
 				char* string = calloc(sizeBuffer + 1, sizeof(char));
 				if (string == NULL) {
+					clearBinaryTree(tree);
 					return false;
 				}
 				for (size_t i = 0; i < sizeBuffer; ++i) {
@@ -57,7 +58,6 @@ bool talkWithUser(void) {
 				printf("¬ведите следующую команду!\n");
 				break;
 			case 2://
-				stringCopy = NULL;
 				stringCopy = returnValueByKey(tree, key);
 				if (string != NULL) {
 					printf("%s\n", string);
@@ -91,25 +91,28 @@ bool talkWithUser(void) {
 }
 
 bool test(void) {
-	Node* tree = NULL;
 	char* buffer = calloc(4, sizeof(char));
 	if (buffer == NULL) {
 		return false;
 	}
 	buffer = "end";
-	tree = addToBinaryTree(tree, 100, buffer);
+	Node* tree = addToBinaryTree(NULL, 100, buffer);
 	if (strcmp(returnValueByKey(tree, 100), buffer) != 0) {
+		clearBinaryTree(tree);
 		return false;
 	}
 	if (!isKeyInTree(tree, 100)) {
+		clearBinaryTree(tree);
 		return false;
 	}
 	
 	tree = deleteNodeInTreeByKey(tree, 100);
 
 	if (isKeyInTree(tree, 100)) {
+		clearBinaryTree(tree);
 		return false;
 	}
+	clearBinaryTree(tree);
 	return true;
 }
 

@@ -25,12 +25,8 @@ Node* createNode(const int key, const char* value) {
 }
 
 Node* addToBinaryTree(Node* tree, const int key, const char* value) {
-
     if (tree == NULL) {
         tree = createNode(key, value);
-        if (tree == NULL) {
-            return NULL;
-        }
         return tree;
     }
 
@@ -39,6 +35,7 @@ Node* addToBinaryTree(Node* tree, const int key, const char* value) {
 
     while (walker != NULL) {
         if (walker->value.key == key) {
+            free(walker->value.value);
             walker->value.value = value;
             return tree;
         } else if (walker->value.key > key) {
@@ -59,24 +56,7 @@ Node* addToBinaryTree(Node* tree, const int key, const char* value) {
 }
 
 bool isKeyInTree(Node* tree, const int key) {
-    Node* walker = tree;
-    
-    if (tree == NULL) {
-        return false;
-    }
-
-    while (walker != NULL) {
-        if (walker->value.key == key) {
-            return true;
-        }
-        else if (walker->value.key < key) {
-            walker = walker->right;
-        }
-        else {
-            walker = walker->left;
-        }
-    }
-    return false;
+    return returnValueByKey(tree, key) != NULL;
 }
 
 void clearOneElement(Node* tree) {
@@ -184,6 +164,7 @@ void clearBinaryTree(Node* tree) {
     if (tree != NULL) {
         clearBinaryTree(tree->left);
         clearBinaryTree(tree->right);
+        free(tree->value.value);
         free(tree);
     }
 }
