@@ -12,7 +12,7 @@ int delete(List* list, int value);
 
 bool isEmpty(List* list);
 
-void clearList(List* list);
+void clearList(List** list);
 
 List* createList(void);
 

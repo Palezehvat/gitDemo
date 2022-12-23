@@ -34,7 +34,7 @@ bool talkWithUser(void) {
 		else if (userComand == 2) {
 			printf("Введите значение\n");
 			int number = scanOne();
-			if (delete(list, number) == -1){
+			if (delete(list, number) == -1) {
 				printf("Проверьте, то ли значение вы ввели!\n");
 			}
 		} else if (userComand == 3) {
@@ -44,7 +44,7 @@ bool talkWithUser(void) {
 		userComand = scanOne();
 	}
 	
-	clearList(list);
+	clearList(&list);
 	return true;
 }
 
@@ -52,12 +52,15 @@ bool tests() {
 	List* list = createList();
 	insert(list, 100);
 	if (top(list) != 100) {
+		clearList(&list);
 		return false;
 	}
 	delete(list, 100);
 	if (top(list) != -1) {
+		clearList(&list);
 		return false;
 	}
+	clearList(&list);
 	return true;
 }
 

@@ -25,13 +25,14 @@ bool isEmpty(List* list) {
 }
 
 int insert(List* list, int value) {
+    Node* newNode = calloc(1, sizeof(Node));
+    if (newNode == NULL) {
+        return -1;
+    }
+    newNode->value = value;
     Node* currentNode = list->head;
+
     if (currentNode != NULL && currentNode->value >= value) {
-        Node* newNode = calloc(1, sizeof(Node));
-        if (newNode == NULL) {
-            return -1;
-        }
-        newNode->value = value;
         newNode->next = currentNode;
         list->head = newNode;
         return 0;
@@ -44,11 +45,6 @@ int insert(List* list, int value) {
         currentNode = currentNode->next;
     }
 
-    Node* newNode = calloc(1, sizeof(Node));
-    if (newNode == NULL) {
-        return -1;
-    }
-    newNode->value = value;
     if (currentNode == NULL) {
         list->head = newNode;
         return 0;
@@ -58,20 +54,20 @@ int insert(List* list, int value) {
     return 0;
 }
 
-void clearList(List* list) {
-    if (list->head != NULL) {
-        while (list->head->next != NULL) {
-            Node* walker = list->head;
+void clearList(List** list) {
+    if ((*list)->head != NULL) {
+        while ((*list)->head->next != NULL) {
+            Node* walker = (*list)->head;
             while (walker->next != NULL && walker->next->next != NULL) {
                 walker = walker->next;
             }
             free(walker->next);
             walker->next = NULL;
         }
-        free(list->head->next);
-        free(list->head);
+        free((*list)->head->next);
+        free((*list)->head);
     }
-    list = NULL;
+    *list = NULL;
 }
 
 int top(List* list) {
@@ -104,16 +100,17 @@ int delete(List* list, int value) {
         currentNode = currentNode->next;
     }
     
-    Node* temp = NULL;
     if (currentNode == NULL) {
         return -1;
     }
+
     if (currentNode->next != NULL) {
-        temp = currentNode->next->next;
+        Node* temp = currentNode->next->next;
         free(currentNode->next);
         currentNode->next = temp;
         return 0;
     }
+
     free(currentNode->next);
     return 0;
 }
