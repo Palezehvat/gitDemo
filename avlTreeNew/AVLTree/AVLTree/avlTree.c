@@ -20,6 +20,22 @@ typedef struct Tree {
 	struct Node* root;
 } Tree;
 
+int orderForBalance(Node* root, bool* isBalanced, int height) {
+	if (root != NULL) {
+		if (orderForBalance(root->right, isBalanced, height) - orderForBalance(root->left, isBalanced != root->data.balance, height)) {
+			*isBalanced = false;
+		}
+		return height + 1;
+	}
+	return 0;
+}
+
+bool checkBalance(Tree* tree) {
+	bool isBalanced = true;
+	orderForBalance(tree->root, &isBalanced, 0);
+	return isBalanced;
+}
+
 Tree* createTree(void) {
 	Tree* tree = calloc(1, sizeof(Tree));
 	return tree;
@@ -36,7 +52,6 @@ void helpedClearTree(Node* root) {
 		helpedClearTree(root->right);
 		free(root->data.value);
 		free(root);
-		root = NULL;
 	}
 }
 
@@ -46,11 +61,9 @@ void clearTree(Tree* tree) {
 	}
 	helpedClearTree(tree->root);
 	free(tree);
-	tree = NULL;
 }
 
-Node* rotateLeft(Node* a)
-{
+Node* rotateLeft(Node* a) {
 	Node* b = a->right;
 	Node* c = b->left;
 	if (b->data.balance == 0) {
@@ -82,14 +95,18 @@ Node* rotateRight(Node* a) {
 
 Node* balance(Node* node) {
 	if (node->data.balance == 2) {
-		if (node->right->data.balance >= 0)
+		if (node->right->data.balance >= 0) {
 			return rotateLeft(node);
+		}
+
 		node->right =  rotateRight(node->right);
 		return rotateLeft(node);
 	}
 	if (node->data.balance == -2) {
-		if (node->left->data.balance <= 0)
+		if (node->left->data.balance <= 0) {
 			return rotateRight(node);
+		}
+
 		node->left = rotateLeft(node->left);
 		return rotateRight(node);
 	}
@@ -104,6 +121,7 @@ Node* helpedToInsert(Node* root, const char* key, char* string, const bool isKey
 		return newNode;
 	}
 	if (strcmp(root->data.key, key) == 0) {
+		free(root->data.value);
 		root->data.value = string;
 		return root;
 	}

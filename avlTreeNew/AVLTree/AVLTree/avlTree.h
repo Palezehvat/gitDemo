@@ -4,22 +4,24 @@
 
 typedef struct Tree Tree;
 
-//Создание дерева
+// Создание дерева
 Tree* createTree(void);
 
-//Удаление дерева
+// Удаление дерева
 void clearTree(Tree* tree);
 
-//Добавление узла к дереву
+// Добавление узла к дереву
 void addToTree(Tree* tree, const char* key, char* string);
 
-//Возвращает значение по ключу
+// Возвращает значение по ключу
 char* returnValueByKey(Tree* tree, const char* key);
 
-//Проверка наличия ключа
+// Проверка наличия ключа
 bool isKeyInTree(Tree* tree, const char* key);
 
-//Удаление элемента по ключу
+// Удаление элемента по ключу
 void deleteNodeInTreeByKey(Tree* tree, const char* key);
 
+//Проверка на баланс, только для тестов
+bool checkBalance(Tree* tree);
 #endif

@@ -24,24 +24,30 @@ bool testForAvlTree() {
 	addToTree(tree, key2, string2);
 	char* string3 = calloc(2, sizeof(char));
 	if (string3 == NULL) {
-		free(string1);
-		free(string2);
+		clearTree(tree);
 		return false;
 	}
 	string3[0] = 'c';
 	char key3[] = "100";
 	addToTree(tree, key3, string3);
 	if (!isKeyInTree(tree, "100")) {
+		clearTree(tree);
+		return false;
+	}
+	if (!checkBalance(tree)) {
+		clearTree(tree);
 		return false;
 	}
 	deleteNodeInTreeByKey(tree, "100", true);
 	if (isKeyInTree(tree, "100")) {
+		clearTree(tree);
 		return false;
 	}
 	deleteNodeInTreeByKey(tree, "200", true);
 	char stringForCheck[2] = { '\0' };
 	stringForCheck[0] = 'a';
 	if (strcmp(returnValueByKey(tree, "320"), stringForCheck) != 0) {
+		clearTree(tree);
 		return false;
 	}
 	deleteNodeInTreeByKey(tree, "320", true);

@@ -61,7 +61,6 @@ bool talkWithUser(void) {
 			addToTree(tree, key, string);
 			break;
 		case 2:
-			stringCopy = NULL;
 			stringCopy = returnValueByKey(tree, key);
 			if (string != NULL) {
 				printf("%s\n", string);
