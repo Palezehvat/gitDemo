@@ -58,9 +58,7 @@ void deleteStack(Stack** stack) {
 }
 
 Stack* createStack(void) {
-    Stack* stack = malloc(sizeof(Stack));
-    stack->head = NULL;
-    return stack;
+    return calloc(1, sizeof(Stack));
 }
 
 char top(Stack* stack) {
