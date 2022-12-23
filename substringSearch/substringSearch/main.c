@@ -39,11 +39,11 @@ char* getLine(int* lengthString, int* errorCode) {
 }
 
 int workWithFile(const char* nameFile, int* errorCode, int sizeSubstring, const char* substring) {
-	FILE* file;
+	FILE* file = NULL;
 	*errorCode = fopen_s(&file, nameFile, "r");
 	if (*errorCode != 0 || file == NULL) {
 		*errorCode = -1;
-		return;
+		return -1;
 	}
 
 	char buffer[400] = { '\0' };
