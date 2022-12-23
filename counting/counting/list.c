@@ -22,9 +22,9 @@ int top(List* list) {
     return list->head->startPosition;
 }
 
+// Очистка списка, поправить работу
 
 void addPositions(List* list, int size) {
-
     int i = 0;
     Node* walker = list->head;
     while (i < size) {
@@ -33,14 +33,13 @@ void addPositions(List* list, int size) {
             return NULL;
         }
 
+        newNode->startPosition = i;
+
         if (list->head != NULL) {
-            newNode->startPosition = i;
             newNode->next = list->head;
             walker->next = newNode;
             walker = walker->next;
-        }
-        if (list->head == NULL) {
-            newNode->startPosition = i;
+        } else {
             list->head = newNode;
             list->head->next = list->head;
             walker = list->head;
@@ -55,26 +54,9 @@ List* createList(void) {
 }
 
 int counting(List* list, int size, int step) {
-    
     int newStep = step % size;
     Node* walker = list->head;
-    if (newStep == 0) {
-        newStep = size;
-    }
     int i = 0;
-    Node* walkerNext = NULL;
-    while (i == 0 && list->head->next != list->head) {
-        while (i + 1 < newStep - 1) {
-            walker = walker->next;
-            ++i;
-        }
-        if (walker->next->next == NULL) {
-            return -1;
-        }
-        walkerNext = walker->next->next;
-        free(walker->next);
-        walker->next = walkerNext;
-    }
     Node* walkerNewNext = NULL;
     while (list->head != NULL && list->head->next != list->head) {
         int i = 0;
