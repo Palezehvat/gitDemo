@@ -30,6 +30,7 @@ void addPositions(List* list, int size) {
     while (i < size) {
         Node* newNode = calloc(1, sizeof(Node));
         if (newNode == NULL) {
+            clearList(&list);
             return NULL;
         }
 
@@ -53,31 +54,47 @@ List* createList(void) {
     return list;
 }
 
-int counting(List* list, int size, int step) {
+int counting(List** list, int size, int step) {
     int newStep = step % size;
-    Node* walker = list->head;
+    Node* walker = (*list)->head;
     int i = 0;
     Node* walkerNewNext = NULL;
-    while (list->head != NULL && list->head->next != list->head) {
+    while ((*list)->head != NULL && (*list)->head->next != (*list)->head) {
         int i = 0;
-        while (i < newStep - 1) {
+        while (i < newStep - 2) {
             walker = walker->next;
             ++i;
         }
-        if (walker->next == NULL) {
+        if (walker->next == NULL || walker->next->next == NULL) {
+            clearList(list);
             return -1;
         }
         walkerNewNext = walker->next->next;
-        if (list->head == walker->next) {
-            list->head = walkerNewNext;
+        if ((*list)->head == walker->next) {
+            (*list)->head = walkerNewNext;
         }
         free(walker->next);
         walker->next = walkerNewNext;
     }
-    if (list->head == NULL) {
+    if ((*list)->head == NULL) {
+        free(*list);
         return -1;
     }
-    int result = list->head->startPosition;
-    free(list->head);
+    int result = (*list)->head->startPosition;
+    free((*list)->head);
     return result;
+}
+
+void clearList(List** list) {
+    while (isEmpty(*list)) {
+        Node* prevWalker = (*list)->head;
+        Node* walker = prevWalker->next;
+        free(prevWalker);
+        while (walker != NULL) {
+            prevWalker = walker;
+            walker = walker->next;
+            free(prevWalker);
+        }
+    }
+    free(*list);
 }

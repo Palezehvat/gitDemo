@@ -9,7 +9,7 @@ int scanOne();
 int whichPosition(int size, int step) {
 	List* list = createList();
 	addPositions(list, size);
-	return counting(list, size, step);
+	return counting(&list, size, step);
 }
 
 bool test1(void) {

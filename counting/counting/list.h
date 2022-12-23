@@ -12,4 +12,6 @@ int top(List* list);
 
 void addPositions(List* list, int size);
 
-int counting(List* list, int size, int step);
+int counting(List** list, int size, int step);
+
+void clearList(List** list);
