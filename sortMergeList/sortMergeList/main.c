@@ -15,7 +15,6 @@ bool readFromFileAndSort(const char* fileName, int numberOrName) {
     }
 
     List* list = createList();
-    List* listCopy = createList();
 
     char letter = 0;
     char name[100] = { '\0' };
@@ -38,11 +37,7 @@ bool readFromFileAndSort(const char* fileName, int numberOrName) {
                 ++i;
             }
             if (addRecord(list, name, number) != 0) {
-                //утечка памяти
-                return false;
-            }
-            if (addRecord(listCopy, NULL, NULL) != 0) {
-                //утечка памяти
+                clear(&list);
                 return false;
             }
             memset(name, 0, strlen(name));
@@ -54,8 +49,8 @@ bool readFromFileAndSort(const char* fileName, int numberOrName) {
     }
     fclose(file);
     size /= 3;
-    //сделать оболочку
-    mergeSort(0, size - 1, list, listCopy, numberOrName);
+
+    mergeSort(size, list, numberOrName);
 
     if (strcmp(fileName, "test.txt") == 0) {
         return isSorted(list, numberOrName);
@@ -63,7 +58,6 @@ bool readFromFileAndSort(const char* fileName, int numberOrName) {
 
     printList(list);
     clear(list);
-    clear(listCopy);
     return true;
 }
 

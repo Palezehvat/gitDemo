@@ -12,6 +12,7 @@ typedef struct Node {
 
 struct List {
     Node* head;
+    Node* tail;
 };
 
 bool isEmpty(List* list) {
@@ -65,14 +66,14 @@ void toList(List* list, List* listCopy, int positionList, int positionListCopy, 
     }
 }
 
-void mergeSort(int with, int to, List* list, List* listCopy, int numberOrName) {
+void mergeSortOriginal(int with, int to, List* list, List* listCopy, int numberOrName) {
     if (to <= with) {
         return;
     }
 
     int middle = (with + to) / 2;
-    mergeSort(with, middle, list, listCopy, numberOrName);
-    mergeSort(middle + 1, to, list, listCopy, numberOrName);
+    mergeSortOriginal (with, middle, list, listCopy, numberOrName);
+    mergeSortOriginal (middle + 1, to, list, listCopy, numberOrName);
 
     int i = with;
     int j = middle + 1;
@@ -99,9 +100,20 @@ void mergeSort(int with, int to, List* list, List* listCopy, int numberOrName) {
     }
 }
 
+void mergeSort(int size, List* list, int numberOrName) {
+    int i = 0;
+    List* listCopy = createList();
+    while (i < size) {
+        addRecord(listCopy, NULL, NULL);
+        ++i;
+    }
+    mergeSortOriginal(0, size - 1, list, listCopy, numberOrName);
+}
+
 int addRecord(List* list, char name[], char number[]) {
     Node* newNode = calloc(1, sizeof(Node));
     if (newNode == NULL) {
+        clear(&list);
         return -1;
     }
     if (name != NULL && number != NULL) {
@@ -117,17 +129,13 @@ int addRecord(List* list, char name[], char number[]) {
 
     if (list->head == NULL) {
         list->head = newNode;
+        list->tail = newNode;
         return 0;
     }
 
-    Node* walker = list->head;
-    while (walker->next != NULL) {
-        walker = walker->next;
-    }
+    list->tail->next = newNode;
 
-    // !!!
-
-    walker->next = newNode;
+    list->tail = newNode;
     return 0;
 }
 
@@ -163,23 +171,23 @@ void printList(List* list) {
     }
 }
 
-void clear(List* list) {
-    if (list->head == NULL) {
+void clear(List** list) {
+    if ((*list)->head == NULL) {
         return;
     }
-    Node* walker = list->head;
-    while (list->head != NULL) {
-        if (list->head->next == NULL) {
-            free(list->head);
+    Node* walker = (*list)->head;
+    while ((*list)->head != NULL) {
+        if ((*list)->head->next == NULL) {
+            free((*list)->head);
             free(list);
             return;
         }
-        walker = list->head;
+        walker = (*list)->head;
         while (walker->next->next != NULL) {
             walker = walker->next;
         }
         free(walker->next);
         walker->next = NULL;
     }
-    // !
+    free(*list);
 }
