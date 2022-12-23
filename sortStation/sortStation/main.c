@@ -5,7 +5,7 @@
 #include <string.h>
 #include <locale.h>
 
-bool converterToPostfixForm(char buffer[], char result[]) {
+bool converterToPostfixForm(const char buffer[], char result[]) {
 	size_t sizeBuffer = strlen(buffer);
 	Queue queue = { NULL, NULL };
 	Stack* operatorActions = createStack();
