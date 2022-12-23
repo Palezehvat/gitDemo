@@ -14,38 +14,44 @@ bool isBalanced(char stringStaples[], int* errorCode) {
 			pushElements(&buffer, stringStaples[i]);
 		} else if (stringStaples[i] == ']' || stringStaples[i] == ')' || stringStaples[i] == '}') {
 			char lastOpenStaple = popElements(&buffer, errorCode);
-			if (*errorCode == 1 || !((lastOpenStaple == '[' && stringStaples[i] == ']') || (lastOpenStaple == '(' && stringStaples[i] == ')') || (lastOpenStaple == '{' && stringStaples[i] == '}') )) {
+			if (*errorCode == 1 
+				|| !((lastOpenStaple == '[' && stringStaples[i] == ']') 
+					|| (lastOpenStaple == '(' && stringStaples[i] == ')') 
+					|| (lastOpenStaple == '{' && stringStaples[i] == '}') )) {
+				clear(&buffer);
 				return false;
 			}
 		} else {
 			*errorCode = 1;
+			clear(&buffer);
 			return false;
 		}
 		++i;
 	}
 	if (buffer != NULL) {
+		clear(&buffer);
 		return false;
 	}
 	return true;
 }
 
 bool firstTest(void) {
-	char stringStaples[5] = { '{', '(', '}', ')', '\0'};
+	char stringStaples[] = "{(})";
 	int errorCode = 0;
-	return isBalanced(stringStaples, &errorCode) == false && errorCode == 0;
+	return !isBalanced(stringStaples, &errorCode) && errorCode == 0;
 }
 
 bool secondTest(void) {
-	char stringStaples[5] = { '{', '(', ')', '}', '\0'};
+	char stringStaples[] = "{()}";
 	int errorCode = 0;
-	return isBalanced(stringStaples, &errorCode) == true && errorCode == 0;
+	return isBalanced(stringStaples, &errorCode) && errorCode == 0;
 }
 
 int main() {
 	setlocale(LC_ALL, "RUS");
 	if (!firstTest() || !secondTest()) {
 		printf("Ошибка...\n");
-		return 0;
+		return -1;
 	} else {
 		printf("Тесты пройдены успешно!\n");
 	}
@@ -53,5 +59,7 @@ int main() {
 	char stringStaples[100];
 	gets_s(stringStaples, 100);
 	int errorCode = 0;
-	printf(isBalanced(stringStaples, &errorCode) && errorCode == 0 ? "Ваша коомбинация скобок сбалансирована\n" : errorCode != 0 ? "Ошибка..." : "Ваша коомбинация скобок не сбалансирована\n");
+	printf(isBalanced(stringStaples, &errorCode) && errorCode == 0 
+		? "Ваша коомбинация скобок сбалансирована\n" 
+		: errorCode != 0 ? "Ошибка..." : "Ваша коомбинация скобок не сбалансирована\n");
 }
