@@ -7,107 +7,111 @@
 
 int scanOne();
 
-bool readFromFile(char fileName[], int numberOrName) {
-	List* list = createList();
-	List* listCopy = createList();
-	
-	FILE* file = fopen(fileName, "r");
-	if (file == NULL) {
-		printf("Ошибка! ");
-		return false;
-	}
-	char letter = 0;
-	char name[100] = { '\0' };
-	char number[100] = { '\0' };
-	char buffer[100] = { '\0' };
-	int stringInfile = 0;
-	int size = 0;
-	while (fscanf(file, "%s", buffer) == 1) {
-		size_t sizeBuffer = strlen(buffer);
-		size_t i = 0;
-		if (stringInfile == 0) {
-			while (i < sizeBuffer) {
-				name[i] = buffer[i];
-				++i;
-			}
-		}
-		if (stringInfile == 2) {
-			while (i < sizeBuffer) {
-				number[i] = buffer[i];
-				++i;
-			}
-			if (addRecord(list, name, number) != 0) {
-				return false;
-			}
-			if (addRecord(listCopy, NULL, NULL) != 0) {
-				return false;
-			}
-			memset(name, 0, strlen(name));
-			memset(number, 0, strlen(number));
-			stringInfile = -1;
-		}
-		++stringInfile;
-		++size;
-	}
-	fclose(file);
-	size /= 3;
-	mergeSort(0, size - 1, list, listCopy, numberOrName);
+bool readFromFileAndSort(const char* fileName, int numberOrName) {
+    FILE* file = fopen(fileName, "r");
+    if (file == NULL) {
+        printf("Ошибка! ");
+        return false;
+    }
 
-	if (strcmp(fileName, "test.txt") == 0) {
-			return isSorted(list, numberOrName);
-	}
+    List* list = createList();
+    List* listCopy = createList();
 
-	printList(list);
-	clear(list);
-	clear(listCopy);
-	return true;
+    char letter = 0;
+    char name[100] = { '\0' };
+    char number[100] = { '\0' };
+    char buffer[100] = { '\0' };
+    int stringInfile = 0;
+    int size = 0;
+    while (fscanf(file, "%s", buffer) == 1) {
+        size_t sizeBuffer = strlen(buffer);
+        size_t i = 0;
+        if (stringInfile == 0) {
+            while (i < sizeBuffer) {
+                name[i] = buffer[i];
+                ++i;
+            }
+        }
+        if (stringInfile == 2) {
+            while (i < sizeBuffer) {
+                number[i] = buffer[i];
+                ++i;
+            }
+            if (addRecord(list, name, number) != 0) {
+                //утечка памяти
+                return false;
+            }
+            if (addRecord(listCopy, NULL, NULL) != 0) {
+                //утечка памяти
+                return false;
+            }
+            memset(name, 0, strlen(name));
+            memset(number, 0, strlen(number));
+            stringInfile = -1;
+        }
+        ++stringInfile;
+        ++size;
+    }
+    fclose(file);
+    size /= 3;
+    //сделать оболочку
+    mergeSort(0, size - 1, list, listCopy, numberOrName);
+
+    if (strcmp(fileName, "test.txt") == 0) {
+        return isSorted(list, numberOrName);
+    }
+
+    printList(list);
+    clear(list);
+    clear(listCopy);
+    return true;
 }
 
 bool test(void) {
-	return readFromFile("test.txt", 1);
+    return readFromFileAndSort("test.txt", 1);
 }
 
 int main() {
-	setlocale(LC_ALL, "RUS");
-	if (test()) {
-		printf("Тест прошёл успешно!\n");
-	}
-	else {
-		printf("Ошибка...\n");
-		return -1;
-	}
-	char fileName[100] = { '\0' };
-	printf("Введите имя файла, с его расширением(Нельзя вводить: test.txt)\n");
-	int checkScan = scanf("%s", &fileName);
+    setlocale(LC_ALL, "RUS");
+    if (test()) {
+        printf("Тест прошёл успешно!\n");
+    }
+    else {
+        printf("Ошибка...\n");
+        return -1;
+    }
+    char fileName[100] = { '\0' };
+    printf("Введите имя файла, с его расширением (Нельзя вводить: test.txt)\n");
+    int checkScan = scanf("%s", &fileName);
 
-	while (strcmp(fileName, "test.txt") == 0 || checkScan != 1) {
-		while (getchar() != '\n') {
-		}
-		printf("Ошибка... Возможно вы ввели test.txt\n");
-		checkScan = scanf("%s", &fileName);
-	}
-	printf("Введите почему сортировать(0 - по имени, 1 - по номеру)\n");
-	int sortByNameOrNumber = scanOne();
-	while (sortByNameOrNumber != 0 && sortByNameOrNumber != 1) {
-		printf("Читайте условие внимательнее...\n");
-		sortByNameOrNumber = scanOne();
-	}
-	if (!readFromFile(fileName, sortByNameOrNumber)) {
-		printf("Ошибка с файлом...\n");
-	}
+    while (strcmp(fileName, "test.txt") == 0 || checkScan != 1) {
+        while (getchar() != '\n') {
+        }
+        printf("Ошибка... Возможно вы ввели test.txt\n");
+        checkScan = scanf("%s", &fileName);
+    }
+    printf("Введите по чему сортировать (0 - по имени, 1 - по номеру)\n");
+    int sortByNameOrNumber = scanOne();
+    while (sortByNameOrNumber != 0 && sortByNameOrNumber != 1) {
+        printf("Читайте условие внимательнее...\n");
+        sortByNameOrNumber = scanOne();
+    }
+    if (!readFromFileAndSort(fileName, sortByNameOrNumber)) {
+        printf("Ошибка с файлом...\n");
+    }
 }
 
 int scanOne() {
-	int number = 0;
-	int checkScanf = scanf("%d", &number);
+    int number = 0;
+    int checkScanf = scanf("%d", &number);
 
-	while (checkScanf != 1) {
-		while (getchar() != '\n') {
-		}
+    while (checkScanf != 1) {
+        while (getchar() != '\n') {
+        }
 
-		printf("Ошибка...\n");
-		checkScanf = scanf("%d", &number);
-	}
+        printf("Ошибка...\n");
+        checkScanf = scanf("%d", &number);
+    }
 
-	return number;
+    return number;
 }

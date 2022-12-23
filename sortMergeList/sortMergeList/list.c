@@ -34,7 +34,8 @@ int isWhichBigger(List* list, int i, int j, int numberOrName) {
     }
     if (numberOrName == 0) {
         return strcmp(walkerFirst->name, walkerSecond->name) > 0 ? i : j;
-    } else {
+    }
+    else {
         return strcmp(walkerFirst->number, walkerSecond->number) > 0 ? i : j;
     }
 }
@@ -55,11 +56,12 @@ void toList(List* list, List* listCopy, int positionList, int positionListCopy, 
     }
 
     if (copyOrMain == 0) {
-            strcpy(walkerCopy->name, walker->name);
-            strcpy(walkerCopy->number, walker->number);
-    } else {
-            strcpy(walker->name, walkerCopy->name);
-            strcpy(walker->number, walkerCopy->number);
+        strcpy(walkerCopy->name, walker->name);
+        strcpy(walkerCopy->number, walker->number);
+    }
+    else {
+        strcpy(walker->name, walkerCopy->name);
+        strcpy(walker->number, walkerCopy->number);
     }
 }
 
@@ -67,7 +69,7 @@ void mergeSort(int with, int to, List* list, List* listCopy, int numberOrName) {
     if (to <= with) {
         return;
     }
-    
+
     int middle = (with + to) / 2;
     mergeSort(with, middle, list, listCopy, numberOrName);
     mergeSort(middle + 1, to, list, listCopy, numberOrName);
@@ -78,13 +80,16 @@ void mergeSort(int with, int to, List* list, List* listCopy, int numberOrName) {
         if (i == middle + 1) {
             toList(list, listCopy, j, l, numberOrName, 0);
             ++j;
-        } else if (j == to + 1) {
+        }
+        else if (j == to + 1) {
             toList(list, listCopy, i, l, numberOrName, 0);
             ++i;
-        } else if (isWhichBigger(list, i, j, numberOrName) == j) {
+        }
+        else if (isWhichBigger(list, i, j, numberOrName) == j) {
             toList(list, listCopy, i, l, numberOrName, 0);
             ++i;
-        } else {
+        }
+        else {
             toList(list, listCopy, j, l, numberOrName, 0);
             ++j;
         }
@@ -119,6 +124,9 @@ int addRecord(List* list, char name[], char number[]) {
     while (walker->next != NULL) {
         walker = walker->next;
     }
+
+    // !!!
+
     walker->next = newNode;
     return 0;
 }
@@ -146,7 +154,7 @@ bool isSorted(List* list, int numberOrName) {
 
 void printList(List* list) {
     if (list->head == NULL) {
-        return ;
+        return;
     }
     Node* walker = list->head;
     while (walker != NULL) {
@@ -173,4 +181,5 @@ void clear(List* list) {
         free(walker->next);
         walker->next = NULL;
     }
+    // !
 }
