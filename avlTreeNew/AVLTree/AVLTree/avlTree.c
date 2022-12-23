@@ -22,10 +22,12 @@ typedef struct Tree {
 
 int orderForBalance(Node* root, bool* isBalanced, int height) {
 	if (root != NULL) {
-		if (orderForBalance(root->right, isBalanced, height) - orderForBalance(root->left, isBalanced != root->data.balance, height)) {
+		int leftHeight = orderForBalance(root->left, isBalanced, height);
+		int rightHeight = orderForBalance(root->right, isBalanced, height);
+		if (rightHeight - leftHeight != root->data.balance) {
 			*isBalanced = false;
 		}
-		return height + 1;
+		return leftHeight > rightHeight ? leftHeight + 1 : rightHeight + 1;
 	}
 	return 0;
 }

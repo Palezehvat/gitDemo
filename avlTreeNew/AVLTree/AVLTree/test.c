@@ -34,6 +34,11 @@ bool testForAvlTree() {
 		clearTree(tree);
 		return false;
 	}
+	for (int i = 0; i < 1000; ++i) {
+		char buffer[5] = { '\0' };
+		_itoa(i, buffer, 10);
+		addToTree(tree, buffer, calloc(1, sizeof(char)));
+	}
 	if (!checkBalance(tree)) {
 		clearTree(tree);
 		return false;
