@@ -7,9 +7,9 @@
 
 typedef struct ElementsHashTable {
     struct List* list;
-};
+} ElementsHashTable;
 
-typedef struct HashTable {
+struct HashTable {
     struct ElementsHashTable** arrayHash;
     int hashSize;
 };
@@ -29,6 +29,9 @@ HashTable* createHashArray(int* errorCode, int size) {
     for (int i = 0; i < size; ++i) {
         table->arrayHash[i] = (ElementsHashTable*)malloc(1 * sizeof(ElementsHashTable));
         if (table->arrayHash[i] == NULL) {
+            for (int j = 0; j < i; ++j) {
+                free(table->arrayHash[j]);
+            }
             *errorCode = -1;
             return NULL;
         }
@@ -59,7 +62,7 @@ int hashFunction(char string[], int size) {
         result += string[i] * neededNumber;
         neededNumber /= simpleNumber;
     }
-    return result % size;
+    return abs(result) % size;
 }
 
 void addToHashTable(HashTable* table, char string[], int* errorCode) {
@@ -69,10 +72,8 @@ void addToHashTable(HashTable* table, char string[], int* errorCode) {
         if (*errorCode == -1) {
             return;
         }
-        insertToList(table->arrayHash[index]->list, string ,errorCode);
-    } else {
-        insertToList(table->arrayHash[index]->list, string, errorCode);
     }
+    insertToList(table->arrayHash[index]->list, string, errorCode);
 }
 
 void printHashTable(HashTable* table) {
