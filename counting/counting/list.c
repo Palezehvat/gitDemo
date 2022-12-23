@@ -82,19 +82,18 @@ int counting(List** list, int size, int step) {
     }
     int result = (*list)->head->startPosition;
     free((*list)->head);
+    free(*list);
+    *list = NULL;
     return result;
 }
 
 void clearList(List** list) {
-    while (isEmpty(*list)) {
+    while ((*list)->head != (*list)->head->next) {
         Node* prevWalker = (*list)->head;
-        Node* walker = prevWalker->next;
+        (*list)->head = (*list)->head->next;
         free(prevWalker);
-        while (walker != NULL) {
-            prevWalker = walker;
-            walker = walker->next;
-            free(prevWalker);
-        }
     }
+    free((*list)->head);
     free(*list);
+    *list = NULL;
 }
