@@ -8,6 +8,7 @@ typedef struct Node {
     char number[100];
     char name[100];
     struct Node* next;
+    struct Node* prev;
 } Node;
 
 struct List {
@@ -20,82 +21,82 @@ bool isEmpty(List* list) {
 }
 
 //смотрит по индексам два элемента, возвращает значение i, если элемент с индексом i больше, чем элемент с индексом j, возвращает значение j в другом случие
-int isWhichBigger(List* list, int i, int j, int numberOrName) {
+int isWhichBigger(List* list, Node* i, Node* j, int numberOrName) {
     Node* walkerFirst = list->head;
     int iWalker = 0;
-    while (iWalker < i && walkerFirst->next != NULL) {
+    while (iWalker < i&& walkerFirst->next != NULL) {
         ++iWalker;
         walkerFirst = walkerFirst->next;
     }
     Node* walkerSecond = list->head;
     int jWalker = 0;
-    while (jWalker < j && walkerSecond->next != NULL) {
+    while (jWalker < j&& walkerSecond->next != NULL) {
         ++jWalker;
         walkerSecond = walkerSecond->next;
     }
     if (numberOrName == 0) {
-        return strcmp(walkerFirst->name, walkerSecond->name) > 0 ? i : j;
+        return strcmp(i->name, j->name) > 0 ? i : j;
     }
     else {
-        return strcmp(walkerFirst->number, walkerSecond->number) > 0 ? i : j;
+        return strcmp(i->number, j->number) > 0 ? i : j;
     }
 }
 
-void toList(List* list, List* listCopy, int positionList, int positionListCopy, int numberOrName, int copyOrMain) {
-    Node* walkerCopy = listCopy->head;
-    int i = 0;
-    while (i < positionListCopy && walkerCopy->next != NULL) {
-        walkerCopy = walkerCopy->next;
-        ++i;
-    }
-
-    Node* walker = list->head;
-    int j = 0;
-    while (j < positionList && walker->next != NULL) {
-        walker = walker->next;
-        ++j;
-    }
-
+void toList(List* list, List* listCopy, Node* positionList, Node* positionListCopy, int numberOrName, int copyOrMain) {
     if (copyOrMain == 0) {
-        strcpy(walkerCopy->name, walker->name);
-        strcpy(walkerCopy->number, walker->number);
+        strcpy(positionListCopy->name, positionList->name);
+        strcpy(positionListCopy->number, positionList->number);
     }
     else {
-        strcpy(walker->name, walkerCopy->name);
-        strcpy(walker->number, walkerCopy->number);
+        strcpy(positionList->name, positionListCopy->name);
+        strcpy(positionList->number, positionListCopy->number);
     }
 }
 
-void mergeSortOriginal(int with, int to, List* list, List* listCopy, int numberOrName) {
+Node* findMiddle(Node* with, Node* to) {
+    Node* walkerWith = with;
+    Node* walkerTo = to;
+    while (walkerWith != walkerTo || walkerWith->next != walkerTo) {
+        walkerWith = walkerWith->next;
+        walkerTo = walkerTo->prev;
+    }
+    return walkerWith;
+}
+
+void mergeSortOriginal(Node* with, Node* to, List* list, List* listCopy, int numberOrName) {
     if (to <= with) {
         return;
     }
 
-    int middle = (with + to) / 2;
-    mergeSortOriginal (with, middle, list, listCopy, numberOrName);
-    mergeSortOriginal (middle + 1, to, list, listCopy, numberOrName);
+    Node* middle = findMiddle(with, to);
 
-    int i = with;
-    int j = middle + 1;
-    for (int l = with; l <= to; ++l) {
+    mergeSortOriginal(with, middle, list, listCopy, numberOrName);
+    mergeSortOriginal(middle + 1, to, list, listCopy, numberOrName);
+
+    Node* i = with;
+    Node* j = middle + 1;
+    Node* l = with;
+    while (i != j) {
         if (i == middle + 1) {
             toList(list, listCopy, j, l, numberOrName, 0);
-            ++j;
+            j = j->next;
         }
         else if (j == to + 1) {
             toList(list, listCopy, i, l, numberOrName, 0);
-            ++i;
+            i = i->next;
         }
         else if (isWhichBigger(list, i, j, numberOrName) == j) {
             toList(list, listCopy, i, l, numberOrName, 0);
-            ++i;
+            i = i->next;
         }
         else {
             toList(list, listCopy, j, l, numberOrName, 0);
-            ++j;
+            j = j->next;
         }
+        l = l->next;
     }
-    for (int k = with; k <= to; ++k) {
+    Node* k = with;
+    while (k <= to) {
         toList(list, listCopy, k, k, numberOrName, 1);
     }
 }
@@ -107,7 +108,7 @@ void mergeSort(int size, List* list, int numberOrName) {
         addRecord(listCopy, NULL, NULL);
         ++i;
     }
-    mergeSortOriginal(0, size - 1, list, listCopy, numberOrName);
+    mergeSortOriginal(list->head, list->tail, list, listCopy, numberOrName);
 }
 
 int addRecord(List* list, char name[], char number[]) {
@@ -128,14 +129,16 @@ int addRecord(List* list, char name[], char number[]) {
     newNode->next = NULL;
 
     if (list->head == NULL) {
+        newNode->prev = list->tail;
         list->head = newNode;
         list->tail = newNode;
         return 0;
     }
 
     list->tail->next = newNode;
-
+    newNode->prev = list->tail;
     list->tail = newNode;
+
     return 0;
 }
 
@@ -158,36 +161,4 @@ bool isSorted(List* list, int numberOrName) {
         ++i;
     }
     return true;
-}
-
-void printList(List* list) {
-    if (list->head == NULL) {
-        return;
-    }
-    Node* walker = list->head;
-    while (walker != NULL) {
-        printf("%s - %s\n", walker->name, walker->number);
-        walker = walker->next;
-    }
-}
-
-void clear(List** list) {
-    if ((*list)->head == NULL) {
-        return;
-    }
-    Node* walker = (*list)->head;
-    while ((*list)->head != NULL) {
-        if ((*list)->head->next == NULL) {
-            free((*list)->head);
-            free(list);
-            return;
-        }
-        walker = (*list)->head;
-        while (walker->next->next != NULL) {
-            walker = walker->next;
-        }
-        free(walker->next);
-        walker->next = NULL;
-    }
-    free(*list);
 }
