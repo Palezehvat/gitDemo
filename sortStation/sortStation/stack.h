@@ -14,11 +14,12 @@ char pop(Stack* stack, int* errorCode);
 bool isEmpty(Stack* stack);
 
 // Удаление стека
-void deleteStack(Stack* stack);
+void deleteStack(Stack** stack);
 
 // Создание стека
 Stack* createStack(void);
 
 // Возвращает верхний элемент стека
 char top(Stack* stack);
+
 #endif

@@ -5,6 +5,19 @@
 #include <string.h>
 #include <locale.h>
 
+void returnOperation(Stack* operatorActions, char symbol[], int* errorCode, Queue* queue) {
+	char operations = pop(operatorActions, errorCode);
+	symbol[0] = operations;
+	if (*errorCode != 0) {
+		clear(queue);
+		deleteStack(&operatorActions);
+		return false;
+	}
+	if (operations != '(') {
+		enqueue(queue, symbol);
+	}
+}
+
 bool converterToPostfixForm(const char buffer[], char result[]) {
 	size_t sizeBuffer = strlen(buffer);
 	Queue queue = { NULL, NULL };
@@ -35,28 +48,20 @@ bool converterToPostfixForm(const char buffer[], char result[]) {
 			}
 			else if (buffer[i] == ')') {
 				while (!isEmpty(operatorActions)) {
-					char operations = pop(operatorActions, &errorCode);
 					char symbol[2] = { '\0' };
-					symbol[0] = operations;
+					returnOperation(operatorActions, symbol, &errorCode, &queue);
 					if (errorCode != 0) {
 						return false;
-					}
-					if (operations != '(') {
-						enqueue(&queue, symbol);
 					}
 				}
 			}
 			else if (buffer[i] == '*' || buffer[i] == '/') {
 				if (top(operatorActions) == '/' || top(operatorActions) == '*') {
 					while (!isEmpty(operatorActions) && (top(operatorActions) == '/' || top(operatorActions) == '*')) {
-						char operations = pop(operatorActions, &errorCode);
 						char symbol[2] = { '\0' };
-						symbol[0] = operations;
+						returnOperation(operatorActions, symbol, &errorCode, &queue);
 						if (errorCode != 0) {
 							return false;
-						}
-						if (operations != '(') {
-							enqueue(&queue, symbol);
 						}
 					}
 				}
@@ -64,14 +69,10 @@ bool converterToPostfixForm(const char buffer[], char result[]) {
 			}
 			else if (buffer[i] == '+' || buffer[i] == '-') {
 				while (!isEmpty(operatorActions)) {
-					char operations = pop(operatorActions, &errorCode);
 					char symbol[2] = { '\0' };
-					symbol[0] = operations;
+					returnOperation(operatorActions, symbol, &errorCode, &queue);
 					if (errorCode != 0) {
 						return false;
-					}
-					if (operations != '(') {
-						enqueue(&queue, symbol);
 					}
 				}
 				push(operatorActions, buffer[i]);
@@ -80,14 +81,10 @@ bool converterToPostfixForm(const char buffer[], char result[]) {
 		++i;
 	}
 	while (!isEmpty(operatorActions)) {
-		char operations = pop(operatorActions, &errorCode);
+		char symbol[2] = { '\0' };
+		returnOperation(operatorActions, symbol, &errorCode, &queue);
 		if (errorCode != 0) {
 			return false;
-		}
-		char symbol[2] = { '\0' };
-		symbol[0] = operations;
-		if (operations != '(') {
-			enqueue(&queue, symbol);
 		}
 	}
 	size_t j = 0;
@@ -95,6 +92,7 @@ bool converterToPostfixForm(const char buffer[], char result[]) {
 		char queueElements[100] = { '\0' };
 		dequeue(&queue, &errorCode, queueElements);
 		if (errorCode != 0) {
+			clear(&queue);
 			return false;
 		}
 		size_t sizeQueueElements = strlen(queueElements);
@@ -113,21 +111,21 @@ bool converterToPostfixForm(const char buffer[], char result[]) {
 	}
 	if (operatorActions != NULL) {
 		if (!isEmpty(operatorActions)) {
-			deleteStack(operatorActions);
+			deleteStack(&operatorActions);
 			return false;
 		}
-		deleteStack(operatorActions);
+		deleteStack(&operatorActions);
 	}
 	return true;
 }
 
 bool firstTest() {
-	char buffer[12] = { '(', '1', ' ', '+', ' ', '2', ')', ' ', '*', ' ', '2', '\0' };
+	char buffer[] = "(1 + 2) * 2";
 	char arrayOutput[100] = { '\0' };
 	if (!converterToPostfixForm(buffer, arrayOutput)) {
 		return false;
 	}
-	char bufferNew[10] = { '1', ' ', '2', ' ', '+', ' ', '2', ' ', '*', '\0' };
+	char bufferNew[] = "1 2 + 2 *";
 	size_t sizeArrayOutput = strlen(arrayOutput);
 
 	for (int i = 0; i < sizeArrayOutput - 1; ++i) {
@@ -139,12 +137,12 @@ bool firstTest() {
 }
 
 bool secondTest() {
-	char buffer[18] = { '(', '1', ' ', '+', ' ', '2', ')', ' ', '*', ' ', '(', '1', ' ', '+', ' ', '2', ')', '\0' };
+	char buffer[] = "(1 + 2) * (1 + 2)";
 	char arrayOutput[100] = { '\0' };
 	if (!converterToPostfixForm(buffer, arrayOutput)) {
 		return false;
 	}
-	char bufferNew[14] = { '1', ' ', '2', ' ', '+', ' ', '1', ' ', '2', ' ', '+', ' ', '*', '\0' };
+	char bufferNew[] = "1 2 + 1 2 + *";
 	size_t sizeArrayOutput = strlen(arrayOutput);
 
 	for (int i = 0; i < sizeArrayOutput - 1; ++i) {
@@ -162,6 +160,7 @@ int main() {
 		printf("Тесты прошли успешно\n");
 	} else {
 		printf("Тесты провалились...\n");
+		return -1;
 	}
 
 	printf("Введите строку примера в итеративной форме\n");

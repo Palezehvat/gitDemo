@@ -49,12 +49,12 @@ bool isEmpty(Stack* stack) {
     return stack->head == NULL;
 }
 
-void deleteStack(Stack* stack) {
-    while (!isEmpty(stack)) {
+void deleteStack(Stack** stack) {
+    while (!isEmpty(*stack)) {
         int errorCode = 0;
-        pop(stack, &errorCode);
+        pop(*stack, &errorCode);
     }
-    stack = NULL;
+    *stack = NULL;
 }
 
 Stack* createStack(void) {
